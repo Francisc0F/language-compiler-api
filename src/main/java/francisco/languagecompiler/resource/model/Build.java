@@ -1,7 +1,11 @@
 package francisco.languagecompiler.resource.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.FieldMask;
+import francisco.languagecompiler.resource.langadapters.CAdapter;
+import francisco.languagecompiler.resource.langadapters.LangAdapter;
+import francisco.languagecompiler.resource.util.ResponseMaker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,12 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Build extends BaseResource implements ExecutableBuild {
+public class Build extends BaseResource implements ExecutableBuild, ResponseMaker {
 
     private String name;
     private String code;
+    @JsonProperty("language")
+    private BuildLang language;
     private BuildStatus status = BuildStatus.PENDING;
-
+    private String reason;
     private Date startedAt;
     private Date completedAt;
 
@@ -28,6 +34,10 @@ public class Build extends BaseResource implements ExecutableBuild {
         super();
         this.name = name;
         this.code = code;
+    }
+
+    public Build() {
+        super();
     }
 
     public void setStatus(BuildStatus status) {
@@ -62,6 +72,10 @@ public class Build extends BaseResource implements ExecutableBuild {
             resultMap.put("startedAt", this.startedAt);
         }
 
+        if (fieldMask.toString().contains("language")) {
+            resultMap.put("language", this.language);
+        }
+
         return resultMap;
     }
 
@@ -73,6 +87,7 @@ public class Build extends BaseResource implements ExecutableBuild {
         resultMap.put("status", this.status);
         resultMap.put("completedAt", this.completedAt);
         resultMap.put("startedAt", this.startedAt);
+        resultMap.put("language", this.language);
         return resultMap;
     }
 
@@ -102,19 +117,27 @@ public class Build extends BaseResource implements ExecutableBuild {
         System.out.println("Started - " + this + " at " + formatDate(startedAt));
         status = BuildStatus.IN_PROGRESS;
 
-        try {
-            Thread.sleep(30 * 1000);
-        } catch (InterruptedException e) {
-            status = BuildStatus.FAILURE;
+        LangAdapter adapter = null;
+        if (Objects.requireNonNull(this.language) == BuildLang.C) {
+            adapter = new CAdapter(this);
         }
+
+        if (adapter == null) {
+            reason = "No adapter for " + this.language.getText();
+            status = BuildStatus.ABORTED;
+        }
+
+        assert adapter != null;
+        adapter.execute();
 
         completedAt = new Date();
         System.out.println("Finished at " + formatDate(completedAt));
         status = BuildStatus.SUCCESS;
     }
 
+
     private String formatDate(Date date) {
-        if(date == null){
+        if (date == null) {
             return "";
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -123,6 +146,10 @@ public class Build extends BaseResource implements ExecutableBuild {
 
     public BuildStatus getStatus() {
         return status;
+    }
+
+    public BuildLang getLang() {
+        return language;
     }
 
     public static class Builder {

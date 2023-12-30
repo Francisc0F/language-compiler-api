@@ -33,6 +33,7 @@ public class BuildsService {
     }
 
     public Build createBuild(Build newBuild) {
-        return new Build("teste 1", "CCCCCC sdnwefjkhbewfkjbe wjke fek fbewb fnbewk jfbwe fjhwnbef");
+        buildsList.add(newBuild);
+        return newBuild;
     }
 }

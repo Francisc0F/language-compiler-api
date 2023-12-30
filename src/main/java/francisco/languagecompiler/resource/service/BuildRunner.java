@@ -35,7 +35,8 @@ public class BuildRunner implements PropertyChangeListener {
                 build.execute();
                 notifier.notifyComplete((Build) build);
             } catch (Exception ex) {
-                System.out.println("Not able to complete");
+                ex.printStackTrace();
+                System.out.println("Not able to complete -");
             }
         });
     }

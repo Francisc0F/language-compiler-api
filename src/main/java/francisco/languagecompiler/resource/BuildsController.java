@@ -2,17 +2,16 @@ package francisco.languagecompiler.resource;
 
 import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.model.Build;
+import francisco.languagecompiler.resource.model.BuildLang;
 import francisco.languagecompiler.resource.model.BuildStatus;
 import francisco.languagecompiler.resource.service.BuildQueueService;
 import francisco.languagecompiler.resource.service.BuildsService;
-import org.springframework.http.HttpStatus;
+import francisco.languagecompiler.resource.util.ErrorResponse;
+import francisco.languagecompiler.resource.util.Response;
+import francisco.languagecompiler.resource.util.StringUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
@@ -28,11 +27,10 @@ public class BuildsController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getBuilds(
+    public ResponseEntity getBuilds(
             @RequestParam(name = "fields", required = false) String fields,
             @RequestParam(name = "status", required = false) String status,
             @RequestParam(name = "name", required = false) String name) {
-        FieldMask fieldMask = parseFieldMask(fields);
 
         Stream<Build> stream = this.buildsService.getBuildsList().stream();
 
@@ -58,38 +56,54 @@ public class BuildsController extends BaseController {
             );
         }
 
-        List<Map<String, Object>> buildsMapList = stream.map(build -> build.toMap(fieldMask))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(buildsMapList);
+        FieldMask fieldMask = parseFieldMask(fields);
+        return Response.okResponse(stream, fieldMask);
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getBuildById(@PathVariable String id,
-                                                            @RequestParam(name = "fields", required = false) String fields) {
-        FieldMask fieldMask = parseFieldMask(fields);
+    public ResponseEntity<Object> getBuildById(
+            @PathVariable String id,
+            @RequestParam(name = "fields", required = false) String fields) {
 
         Build build = this.buildsService.getBuildById(id);
 
         if (build == null) {
-            return ResponseEntity.notFound().build();
+            return ErrorResponse.builder()
+                    .addError("Not found build")
+                    .notFound();
         }
 
-        Map<String, Object> buildMap = build.toMap(fieldMask);
-        return ResponseEntity.ok(buildMap);
+        FieldMask fieldMask = parseFieldMask(fields);
+        return Response.okResponse(build, fieldMask);
     }
 
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> create(@RequestBody Build buildRequest) {
-        if (buildRequest.getCode() == null || buildRequest.getCode().isEmpty()) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", "Code is required for the build");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity create(@RequestBody Build buildRequest,
+                                 @RequestParam(name = "fields", required = false) String fields) {
+
+        ErrorResponse.Builder err = ErrorResponse.builder();
+
+        if (buildRequest.getLang() == BuildLang.Unknown) {
+            err.addError("Lang is required for the build");
         }
-        Build createdBuild = this.buildsService.createBuild(buildRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBuild.toMap());
+
+        if (StringUtil.isNullOrEmpty(buildRequest.getCode())) {
+            err.addError("Code is required for the build");
+        }
+
+        if (StringUtil.isNullOrEmpty(buildRequest.getName())) {
+            err.addError("Name is required for the build");
+        }
+
+        if(err.hasError()){
+            return err.badRequest();
+        }
+
+        Build build = this.buildsService.createBuild(buildRequest);
+        FieldMask fieldMask = parseFieldMask(fields);
+        return Response.createdResponse(build, fieldMask);
     }
 
     @DeleteMapping("/{id}")
@@ -103,11 +117,15 @@ public class BuildsController extends BaseController {
         Build build = this.buildsService.getBuildById(id);
 
         if (build == null) {
-            return ResponseEntity.notFound().build();
+           return ErrorResponse.builder()
+                    .addError("Not found build")
+                    .notFound();
         }
 
         if (build.getStatus().equals(BuildStatus.IN_PROGRESS)) {
-            return ResponseEntity.badRequest().body("Build is already in progress");
+            return ErrorResponse.builder()
+                    .addError("Build is already in progress")
+                    .badRequest();
         }
 
         buildQueueService.addToQueue(build);

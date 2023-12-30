@@ -24,30 +24,6 @@ public class BuildQueueService implements PropertyChangeListener {
         notifier.addObserverComplete(this);
     }
 
-/*    private synchronized void runBuild(ExecutableBuild build) {
-        buildQueue.offer(build);
-        if (!isRunning) {
-            startNextBuild();
-        }
-    }
-
-    private void startNextBuild() {
-        if (!buildQueue.isEmpty()) {
-            ExecutableBuild nextBuild = buildQueue.poll();
-            isRunning = true;
-            nextBuild.execute();
-            buildComplete();
-
-        } else {
-            isRunning = false;
-        }
-    }*/
-
-  /*  private void buildComplete() {
-        isRunning = false;
-        startNextBuild();
-    }*/
-
     public void addToQueue(Build build) {
         build.setStatus(IN_QUEUE);
         if(buildQueue.isEmpty()){
