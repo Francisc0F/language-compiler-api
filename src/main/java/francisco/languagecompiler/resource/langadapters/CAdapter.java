@@ -3,7 +3,10 @@ package francisco.languagecompiler.resource.langadapters;
 import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.BuildStatus;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -14,7 +17,7 @@ public class CAdapter implements LangAdapter {
     Build build;
 
     public CAdapter(Build build) {
-         this.build = build;
+        this.build = build;
     }
 
     @Override
@@ -27,9 +30,32 @@ public class CAdapter implements LangAdapter {
             ProcessBuilder processBuilder = new ProcessBuilder(buildCommand.split("\\s+"));
             Process process = processBuilder.start();
 
+            InputStream inputStream = process.getInputStream();
+            InputStream errorStream = process.getErrorStream();
+
+            // todo log this stuff into de the build object
+            BufferedReader outputReader = new BufferedReader(new InputStreamReader(inputStream));
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
+
+            String outputLine;
+            while ((outputLine = outputReader.readLine()) != null) {
+                System.out.println("Standard Output: " + outputLine);
+            }
+
+            String errorLine;
+            while ((errorLine = errorReader.readLine()) != null) {
+                System.err.println("Standard Error: " + errorLine);
+            }
+
+// Close the streams
+            outputReader.close();
+            errorReader.close();
+            inputStream.close();
+            errorStream.close();
+
             // Wait for the process to complete
             int exitCode = process.waitFor();
-            System.out.println("Exit code " +exitCode);
+            System.out.println("Exit code " + exitCode);
             if (exitCode == 0) {
 
             } else {
