@@ -1,2 +1,4 @@
 francisco/languagecompiler/SwaggerSampleApplicationTests.java
  francisco.languagecompiler.SwaggerSampleApplicationTests
+francisco/languagecompiler/resource/util/FieldMaskMapperTest.java
+ francisco.languagecompiler.resource.util.FieldMaskMapperTest

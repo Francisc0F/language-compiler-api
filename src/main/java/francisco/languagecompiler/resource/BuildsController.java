@@ -3,8 +3,9 @@ package francisco.languagecompiler.resource;
 import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.BuildLang;
+import francisco.languagecompiler.resource.model.BuildOperation;
 import francisco.languagecompiler.resource.model.BuildStatus;
-import francisco.languagecompiler.resource.service.BuildQueueService;
+import francisco.languagecompiler.resource.service.OperationQueueService;
 import francisco.languagecompiler.resource.service.BuildsService;
 import francisco.languagecompiler.resource.util.ErrorResponse;
 import francisco.languagecompiler.resource.util.Response;
@@ -18,12 +19,12 @@ import java.util.stream.Stream;
 @RequestMapping("/api/v1/builds")
 public class BuildsController extends BaseController {
     private final BuildsService buildsService;
-    private final BuildQueueService buildQueueService;
+    private final OperationQueueService operationsQueueService;
 
     public BuildsController(BuildsService buildsService,
-                            BuildQueueService buildQueueService) {
+                            OperationQueueService operationQueueService) {
         this.buildsService = buildsService;
-        this.buildQueueService = buildQueueService;
+        this.operationsQueueService = operationQueueService;
     }
 
     @GetMapping
@@ -32,7 +33,7 @@ public class BuildsController extends BaseController {
             @RequestParam(name = "status", required = false) String status,
             @RequestParam(name = "name", required = false) String name) {
 
-        Stream<Build> stream = this.buildsService.getBuildsList().stream();
+        Stream<Build> stream = this.buildsService.getStream();
 
         if (status != null) {
             BuildStatus statusFilter = null;
@@ -101,7 +102,7 @@ public class BuildsController extends BaseController {
             return err.badRequest();
         }
 
-        Build build = this.buildsService.createBuild(buildRequest);
+        Build build = this.buildsService.addbuild(buildRequest);
         FieldMask fieldMask = parseFieldMask(fields);
         return Response.createdResponse(build, fieldMask);
     }
@@ -128,7 +129,7 @@ public class BuildsController extends BaseController {
                     .badRequest();
         }
 
-        buildQueueService.addToQueue(build);
+        operationsQueueService.addToQueue(new BuildOperation(build));
         return ResponseEntity.ok().build();
     }
 }

@@ -3,37 +3,30 @@ package francisco.languagecompiler.resource.service;
 
 
 import francisco.languagecompiler.resource.model.Build;
-import francisco.languagecompiler.resource.model.ExecutableBuild;
+import francisco.languagecompiler.resource.model.ExecutableOperation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 
-public class BuildRunner implements PropertyChangeListener {
-    Queue<ExecutableBuild> buildQueue;
-    ExecutableBuild build;
-    BuildNotifier notifier;
+public class OperationRunner implements PropertyChangeListener {
+    ExecutableOperation executableOperation;
+    OperationNotifier notifier;
 
-    BuildRunner(ExecutableBuild build, BuildNotifier notifier) {
-        this.build = build;
+    OperationRunner(OperationNotifier notifier) {
         this.notifier = notifier;
     }
 
-    BuildRunner(BuildNotifier notifier) {
-        this.notifier = notifier;
-    }
-
-    public void setBuild(ExecutableBuild build) {
-        this.build = build;
+    public void setExecutableOperation(ExecutableOperation executableOperation) {
+        this.executableOperation = executableOperation;
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         CompletableFuture.runAsync(() -> {
             try {
-                build.execute();
-                notifier.notifyComplete((Build) build);
+                executableOperation.execute();
+                notifier.notifyComplete((Build) executableOperation);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("Not able to complete -");

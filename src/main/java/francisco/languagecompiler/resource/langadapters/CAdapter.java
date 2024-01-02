@@ -1,6 +1,6 @@
 package francisco.languagecompiler.resource.langadapters;
 
-import francisco.languagecompiler.resource.model.Build;
+import francisco.languagecompiler.resource.model.BuildOperation;
 import francisco.languagecompiler.resource.model.BuildStatus;
 
 import java.io.BufferedReader;
@@ -13,11 +13,12 @@ import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+// more like a decorator
 public class CAdapter implements LangAdapter {
-    Build build;
+    BuildOperation operation;
 
-    public CAdapter(Build build) {
-        this.build = build;
+    public CAdapter(BuildOperation operation) {
+        this.operation = operation;
     }
 
     @Override
@@ -33,48 +34,45 @@ public class CAdapter implements LangAdapter {
             InputStream inputStream = process.getInputStream();
             InputStream errorStream = process.getErrorStream();
 
-            // todo log this stuff into de the build object
             BufferedReader outputReader = new BufferedReader(new InputStreamReader(inputStream));
             BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
 
             String outputLine;
             while ((outputLine = outputReader.readLine()) != null) {
-                System.out.println("Standard Output: " + outputLine);
+                this.operation.addStdOutLine(outputLine);
             }
 
             String errorLine;
             while ((errorLine = errorReader.readLine()) != null) {
-                System.err.println("Standard Error: " + errorLine);
+                this.operation.addStdErrorLine(errorLine);
             }
-
-// Close the streams
             outputReader.close();
             errorReader.close();
             inputStream.close();
             errorStream.close();
 
-            // Wait for the process to complete
             int exitCode = process.waitFor();
             System.out.println("Exit code " + exitCode);
+            this.operation.setExitCode(exitCode);
             if (exitCode == 0) {
-
+                this.operation.setStatus(BuildStatus.SUCCESS);
             } else {
-
-                this.build.setStatus(BuildStatus.FAILURE);
+                this.operation.setStatus(BuildStatus.FAILURE);
             }
         } catch (InterruptedException e) {
-            this.build.setStatus(BuildStatus.FAILURE);
+            this.operation.setStatus(BuildStatus.FAILURE);
+
         } catch (IOException e) {
-            this.build.setStatus(BuildStatus.FAILURE);
+            this.operation.setStatus(BuildStatus.FAILURE);
             throw new RuntimeException(e);
         }
     }
 
     private String createCFile() throws IOException {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fileName = this.build.getName() + "_" + timestamp + ".c";
+        String fileName = this.operation.getOperationName() + "_" + timestamp + ".c";
         Path filePath = Path.of(fileName);
-        Files.write(filePath, this.build.getCode().getBytes(), StandardOpenOption.CREATE);
+        Files.write(filePath, this.operation.getBuildCode().getBytes(), StandardOpenOption.CREATE);
         return fileName;
     }
 }

@@ -1,12 +1,15 @@
 package francisco.languagecompiler.resource.model;
 
+import lombok.Getter;
+
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
 
-public class BaseResource {
+abstract class BaseResource {
 
+    @Getter
     protected final String id;
     private final Date createdDate;
     private Date updatedDate;
@@ -23,20 +26,6 @@ public class BaseResource {
         this.updatedDate = new Date();
     }
 
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    // Override toString() method
     @Override
     public String toString() {
         return "BaseResource{" +
@@ -45,7 +34,6 @@ public class BaseResource {
                 '}';
     }
 
-    // Override equals() method
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,10 +41,4 @@ public class BaseResource {
         Build build = (Build) o;
         return Objects.equals(id, build.getId());
     }
-
-
-    public String getId() {
-        return id;
-    }
-
 }

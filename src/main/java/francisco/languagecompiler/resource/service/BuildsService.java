@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 public class BuildsService {
@@ -16,8 +17,8 @@ public class BuildsService {
         buildsList.add(new Build( "f683a420-6bbd-4dc3-a5f6-8debcfff1c5a", "C++ ", ">>cout"));
     }
 
-    public List<Build> getBuildsList() {
-        return buildsList;
+    public Stream<Build> getStream() {
+        return buildsList.stream();
     }
 
     public Build getBuildById(String id) {
@@ -32,7 +33,7 @@ public class BuildsService {
         buildsList.removeIf(build -> Objects.equals(build.getId(), id));
     }
 
-    public Build createBuild(Build newBuild) {
+    public Build addbuild(Build newBuild) {
         buildsList.add(newBuild);
         return newBuild;
     }

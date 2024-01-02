@@ -7,7 +7,7 @@ import francisco.languagecompiler.resource.model.Build;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class BuildNotifier {
+public class OperationNotifier {
     PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public void addObserver(PropertyChangeListener l) {

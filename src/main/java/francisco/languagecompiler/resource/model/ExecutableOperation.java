@@ -1,5 +1,5 @@
 package francisco.languagecompiler.resource.model;
 
-public interface ExecutableBuild {
+public interface ExecutableOperation {
     void execute();
 }

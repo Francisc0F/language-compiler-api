@@ -1,17 +1,16 @@
-francisco/languagecompiler/resource/util/ResponseMaker.java
- francisco.languagecompiler.resource.util.ResponseMaker
-francisco/languagecompiler/resource/langadapters/LangAdapter.java
- francisco.languagecompiler.resource.langadapters.LangAdapter
-francisco/languagecompiler/resource/service/BuildQueueService.java
- francisco.languagecompiler.resource.service.BuildQueueService
+francisco/languagecompiler/resource/model/Operation.java
+ francisco.languagecompiler.resource.model.Operation
+ francisco.languagecompiler.resource.model.Operation$Metadata
+francisco/languagecompiler/resource/service/OperationNotifier.java
+ francisco.languagecompiler.resource.service.OperationNotifier
+francisco/languagecompiler/resource/model/ExecutableOperation.java
+ francisco.languagecompiler.resource.model.ExecutableOperation
 francisco/languagecompiler/resource/BaseController.java
  francisco.languagecompiler.resource.BaseController
 francisco/languagecompiler/resource/LanguageCompilerApplication.java
  francisco.languagecompiler.resource.LanguageCompilerApplication
 francisco/languagecompiler/resource/model/BuildStatus.java
  francisco.languagecompiler.resource.model.BuildStatus
-francisco/languagecompiler/resource/langadapters/CAdapter.java
- francisco.languagecompiler.resource.langadapters.CAdapter
 francisco/languagecompiler/resource/service/OperationsService.java
  francisco.languagecompiler.resource.service.OperationsService
 francisco/languagecompiler/resource/util/ErrorResponse.java
@@ -19,22 +18,36 @@ francisco/languagecompiler/resource/util/ErrorResponse.java
  francisco.languagecompiler.resource.util.ErrorResponse$Builder
 francisco/languagecompiler/resource/service/BuildsService.java
  francisco.languagecompiler.resource.service.BuildsService
-francisco/languagecompiler/resource/service/BuildNotifier.java
- francisco.languagecompiler.resource.service.BuildNotifier
-francisco/languagecompiler/resource/model/ExecutableBuild.java
- francisco.languagecompiler.resource.model.ExecutableBuild
 francisco/languagecompiler/resource/util/Response.java
  francisco.languagecompiler.resource.util.Response
 francisco/languagecompiler/resource/model/BaseResource.java
  francisco.languagecompiler.resource.model.BaseResource
+francisco/languagecompiler/resource/util/FieldsHelper.java
+ francisco.languagecompiler.resource.util.FieldsHelper
 francisco/languagecompiler/resource/model/BuildLang.java
  francisco.languagecompiler.resource.model.BuildLang
-francisco/languagecompiler/resource/service/BuildRunner.java
- francisco.languagecompiler.resource.service.BuildRunner
 francisco/languagecompiler/resource/BuildsController.java
  francisco.languagecompiler.resource.BuildsController
-francisco/languagecompiler/resource/model/Build.java
- francisco.languagecompiler.resource.model.Build
- francisco.languagecompiler.resource.model.Build$Builder
 francisco/languagecompiler/resource/util/StringUtil.java
  francisco.languagecompiler.resource.util.StringUtil
+francisco/languagecompiler/resource/OperationsController.java
+ francisco.languagecompiler.resource.OperationsController
+francisco/languagecompiler/resource/util/ResponseMaker.java
+ francisco.languagecompiler.resource.util.ResponseMaker
+francisco/languagecompiler/resource/langadapters/LangAdapter.java
+ francisco.languagecompiler.resource.langadapters.LangAdapter
+francisco/languagecompiler/resource/langadapters/CAdapter.java
+ francisco.languagecompiler.resource.langadapters.CAdapter
+francisco/languagecompiler/resource/model/BuildOperation.java
+ francisco.languagecompiler.resource.model.BuildOperation
+francisco/languagecompiler/resource/util/DateUtil.java
+ francisco.languagecompiler.resource.util.DateUtil
+francisco/languagecompiler/resource/service/OperationQueueService.java
+ francisco.languagecompiler.resource.service.OperationQueueService
+francisco/languagecompiler/resource/model/Build.java
+ francisco.languagecompiler.resource.model.Build
+ francisco.languagecompiler.resource.model.Build$BuildResultTOperation
+francisco/languagecompiler/resource/service/OperationRunner.java
+ francisco.languagecompiler.resource.service.OperationRunner
+francisco/languagecompiler/resource/util/FieldMaskMapper.java
+ francisco.languagecompiler.resource.util.FieldMaskMapper
