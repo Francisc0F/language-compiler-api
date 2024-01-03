@@ -1,11 +1,13 @@
 package francisco.languagecompiler.resource.model;
 
+import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.langadapters.CAdapter;
 import francisco.languagecompiler.resource.langadapters.LangAdapter;
 import francisco.languagecompiler.resource.util.DateUtil;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 public class BuildOperation extends Operation<Build.BuildResultTOperation> implements ExecutableOperation {
@@ -68,5 +70,10 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> imple
 
     public void setExitCode(int exitCode) {
         this.metadata.getResult().exitCode = exitCode;
+    }
+
+    @Override
+    public Map<String, Object> toMap(FieldMask fieldMask) {
+        return null;
     }
 }

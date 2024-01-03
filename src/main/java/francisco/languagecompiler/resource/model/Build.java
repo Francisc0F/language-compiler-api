@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.util.*;
 
+import static francisco.languagecompiler.resource.util.FieldMaskMapper.getFmStrings;
+
 public class Build extends BaseResource implements ResponseMaker {
 
     @Getter
@@ -47,7 +49,8 @@ public class Build extends BaseResource implements ResponseMaker {
     }
 
     public Map<String, Object> toMap(FieldMask fm) {
-        return FieldMaskMapper.createHashMapWithFields(this, fm.toString().split(","));
+        String[] paths = getFmStrings(fm);
+        return FieldMaskMapper.createHashMapWithFields(this, paths);
     }
 
     @Override

@@ -1,16 +1,18 @@
 package francisco.languagecompiler.resource.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
 
-abstract class BaseResource {
+public abstract class BaseResource {
 
     @Getter
-    protected final String id;
+    @Setter
+    public String id;
     private final Date createdDate;
     private Date updatedDate;
 

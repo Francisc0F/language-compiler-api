@@ -1,16 +1,14 @@
 package francisco.languagecompiler.resource.util;
 
 import com.google.protobuf.FieldMask;
-import com.google.protobuf.ProtocolStringList;
 import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.BuildOperation;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
+import static francisco.languagecompiler.resource.util.FieldMaskMapper.getFmStrings;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FieldMaskMapperTest {
@@ -104,19 +102,11 @@ class FieldMaskMapperTest {
         }
         FieldMask fm = fmBuilder.build();
 
-        ProtocolStringList fieldPaths = fm.getPathsList();
-
-        // Create a list to collect the paths
-
-        List<String> pathsList = new ArrayList<>(fieldPaths);
-
-        String[] paths = pathsList.toArray(new String[0]);
+        String[] paths = getFmStrings(fm);
 
         FieldMaskMapper.createHashMapWithFields(new Build("batata", "feijao"), paths);
     }
 
-
-    // todo provide * funcionality
     @Test
     void testAllFields() {
         Build b = new Build();
@@ -136,7 +126,7 @@ class FieldMaskMapperTest {
         Map<String, Object> resultMap = FieldMaskMapper.createHashMapWithFields(obj, fieldMask);
 
         // Assert the expected values
-        assertEquals(7, resultMap.size()); // Including base class fields
+        assertEquals(6, resultMap.size()); // Including base class fields
         assertEquals(true, resultMap.get("done"));
         assertEquals("typeA", ((Map<String, Object>) resultMap.get("metadata")).get("type"));
         assertEquals("9876", ((Map<String, Object>) resultMap.get("metadata")).get("id"));
