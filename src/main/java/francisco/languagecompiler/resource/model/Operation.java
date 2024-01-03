@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.util.Date;
 
-public abstract class Operation<resultT> extends BaseResource implements ResponseMaker {
+public abstract class Operation<resultT> extends BaseResource implements ResponseMaker, ExecutableOperation {
 
     @Getter
     @Setter

@@ -1,6 +1,5 @@
 package francisco.languagecompiler.resource.service;
 
-import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.Operation;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class OperationsService {
         return operationList.stream();
     }
 
-    public Operation getOperationById(String id) {
+    public Operation get(String id) {
         return operationList.stream()
                 .filter(build -> Objects.equals(build.getId(), id))
                 .findFirst()
@@ -30,8 +29,11 @@ public class OperationsService {
         operationList.removeIf(build -> Objects.equals(build.getId(), id));
     }
 
-    public Operation addbuild(Operation op) {
-        operationList.add(op);
-        return op;
+    public Operation add(Operation op) {
+        if (Objects.equals(op.getMetadata().getType(), "codecompile")) {
+            operationList.add(op);
+            return op;
+        }
+        return null;
     }
 }

@@ -1,28 +1,38 @@
 package francisco.languagecompiler.resource;
 
 import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.model.Build;
-import francisco.languagecompiler.resource.model.Operation;
+import francisco.languagecompiler.resource.model.*;
+import francisco.languagecompiler.resource.requests.BatchOperationsRequest;
+import francisco.languagecompiler.resource.requests.OperationRequest;
+import francisco.languagecompiler.resource.service.BuildsService;
 import francisco.languagecompiler.resource.service.OperationQueueService;
 import francisco.languagecompiler.resource.service.OperationsService;
 import francisco.languagecompiler.resource.util.ErrorResponse;
 import francisco.languagecompiler.resource.util.Response;
+import francisco.languagecompiler.resource.util.StringUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
+
 @RestController
 @RequestMapping("/api/v1/operations")
 public class OperationsController extends BaseController {
     private final OperationsService operationsService;
+    private final BuildsService buildsService;
     private final OperationQueueService operationsQueueService;
 
     public OperationsController(OperationsService operationsService,
-                            OperationQueueService operationQueueService) {
+                                BuildsService buildsService,
+                                OperationQueueService operationQueueService) {
         this.operationsService = operationsService;
+        this.buildsService = buildsService;
         this.operationsQueueService = operationQueueService;
     }
+
     @GetMapping
     public ResponseEntity getOperations(
             @RequestParam(name = "fields", required = false) String fields,
@@ -53,7 +63,7 @@ public class OperationsController extends BaseController {
             @PathVariable String id,
             @RequestParam(name = "fields", required = false) String fields) {
 
-        Operation build = this.operationsService.getOperationById(id);
+        Operation build = this.operationsService.get(id);
 
         if (build == null) {
             return ErrorResponse.builder()
@@ -63,6 +73,79 @@ public class OperationsController extends BaseController {
 
         FieldMask fieldMask = parseFieldMask(fields);
         return Response.okResponse(build, fieldMask);
+    }
+
+
+    @PostMapping
+    public ResponseEntity create(@RequestBody OperationRequest operationRequest,
+                                 @RequestParam(name = "fields", required = false) String fields) {
+
+        ErrorResponse.Builder err = ErrorResponse.builder();
+
+        String id = operationRequest.getBuildId();
+        if (StringUtil.isNullOrEmpty(id)) {
+            err.addError("Runnable ID not found, it is required to register operation");
+        }
+
+        Build build = this.buildsService.getBuildById(id);
+
+        Operation op = this.operationsService.add(new BuildOperation(build));
+
+        if (op == null) {
+            err.addError("Not able to register long running operation");
+        }
+
+        if (err.hasError()) {
+            return err.badRequest();
+        }
+
+        FieldMask fieldMask = parseFieldMask(fields);
+
+        assert op != null;
+        return Response.createdResponse(op, fieldMask);
+    }
+
+    @PostMapping("/{id}:run")
+    public ResponseEntity run(@PathVariable String id) {
+        Operation op = this.operationsService.get(id);
+
+
+        if (op == null) {
+            return ErrorResponse.builder()
+                    .addError("Not found operation")
+                    .notFound();
+        }
+
+        /*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
+            return ErrorResponse.builder()
+                    .addError("Build is already in progress")
+                    .badRequest();
+        }*/
+
+        operationsQueueService.addToQueue(op);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}:batchrun")
+    public ResponseEntity batchRun(@RequestBody BatchOperationsRequest batchRequest) {
+
+        ArrayList<String> idsList = new ArrayList<>(Arrays.asList(batchRequest.getIds()));
+
+        if (idsList.isEmpty()) {
+            return ErrorResponse.builder()
+                    .addError("No ids especified")
+                    .badRequest();
+        }
+
+        ArrayList<String> setToRun = new ArrayList<>();
+        idsList.forEach(e -> {
+            Operation op = this.operationsService.get(e);
+            if (op != null) {
+                operationsQueueService.addToQueue(op);
+                setToRun.add(e);
+            }
+        });
+        return Response.createdResponse(setToRun);
     }
 
 

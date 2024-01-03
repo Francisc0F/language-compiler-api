@@ -86,7 +86,7 @@ public class BuildsController extends BaseController {
 
         ErrorResponse.Builder err = ErrorResponse.builder();
 
-        if (buildRequest.getLang() == BuildLang.Unknown) {
+        if (buildRequest.getLanguage() == null || buildRequest.getLanguage() == BuildLang.Unknown) {
             err.addError("Lang is required for the build");
         }
 

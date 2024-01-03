@@ -22,6 +22,8 @@ francisco/languagecompiler/resource/util/Response.java
  francisco.languagecompiler.resource.util.Response
 francisco/languagecompiler/resource/model/BaseResource.java
  francisco.languagecompiler.resource.model.BaseResource
+francisco/languagecompiler/resource/requests/OperationRequest.java
+ francisco.languagecompiler.resource.requests.OperationRequest
 francisco/languagecompiler/resource/util/FieldsHelper.java
  francisco.languagecompiler.resource.util.FieldsHelper
 francisco/languagecompiler/resource/model/BuildLang.java
@@ -38,6 +40,8 @@ francisco/languagecompiler/resource/langadapters/LangAdapter.java
  francisco.languagecompiler.resource.langadapters.LangAdapter
 francisco/languagecompiler/resource/langadapters/CAdapter.java
  francisco.languagecompiler.resource.langadapters.CAdapter
+francisco/languagecompiler/resource/requests/BatchOperationsRequest.java
+ francisco.languagecompiler.resource.requests.BatchOperationsRequest
 francisco/languagecompiler/resource/model/BuildOperation.java
  francisco.languagecompiler.resource.model.BuildOperation
 francisco/languagecompiler/resource/util/DateUtil.java

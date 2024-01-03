@@ -52,7 +52,13 @@ public class FieldMaskMapper {
 
         return filteredFieldValues;
     }
-
+    public static Map<String, Object> validateFieldMask(Object obj, FieldMask fm) {
+        if (fm == null) {
+            return FieldMaskMapper.createHashMapWithFields(obj, "*");
+        }
+        String[] paths = getFmStrings(fm);
+        return FieldMaskMapper.createHashMapWithFields(obj, paths);
+    }
     private static void setAllFieldsAvailable(Map<String, Object> fieldValues, Map<String, Object> filteredFieldValues) {
         setAllFields(fieldValues, filteredFieldValues);
 

@@ -1,7 +1,6 @@
 package francisco.languagecompiler.resource.util;
 
 import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.model.Build;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -11,6 +10,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Response {
+
+    static public ResponseEntity createdResponse(Object responseBody) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+    }
     static public ResponseEntity createdResponse(ResponseMaker responseBody) {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }

@@ -4,13 +4,15 @@ import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.langadapters.CAdapter;
 import francisco.languagecompiler.resource.langadapters.LangAdapter;
 import francisco.languagecompiler.resource.util.DateUtil;
-import lombok.Getter;
+import francisco.languagecompiler.resource.util.FieldMaskMapper;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-public class BuildOperation extends Operation<Build.BuildResultTOperation> implements ExecutableOperation {
+import static francisco.languagecompiler.resource.util.FieldMaskMapper.getFmStrings;
+
+public class BuildOperation extends Operation<Build.BuildResultTOperation>  {
 
     Build build;
 
@@ -35,7 +37,7 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> imple
 
         LangAdapter adapter = null;
 
-        if (Objects.requireNonNull(this.build.getLang()) == BuildLang.C) {
+        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.C) {
             adapter = new CAdapter(this);
         }
 
@@ -73,7 +75,8 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> imple
     }
 
     @Override
-    public Map<String, Object> toMap(FieldMask fieldMask) {
-        return null;
+    public Map<String, Object> toMap(FieldMask fm) {
+        String[] paths = getFmStrings(fm);
+        return FieldMaskMapper.createHashMapWithFields(this, paths);
     }
 }
