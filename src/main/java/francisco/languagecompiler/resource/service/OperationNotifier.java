@@ -3,6 +3,7 @@ package francisco.languagecompiler.resource.service;
 
 
 import francisco.languagecompiler.resource.model.Build;
+import francisco.languagecompiler.resource.model.Operation;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -22,7 +23,7 @@ public class OperationNotifier {
         pcs.addPropertyChangeListener("complete", l);
     }
 
-    public void notifyComplete(Build val) {
+    public void notifyComplete(Operation val) {
         pcs.firePropertyChange("complete", null, val);
     }
 }

@@ -2,7 +2,6 @@ package francisco.languagecompiler.resource;
 
 import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.model.*;
-import francisco.languagecompiler.resource.requests.BatchOperationsRequest;
 import francisco.languagecompiler.resource.requests.OperationRequest;
 import francisco.languagecompiler.resource.service.BuildsService;
 import francisco.languagecompiler.resource.service.OperationQueueService;
@@ -13,8 +12,6 @@ import francisco.languagecompiler.resource.util.StringUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -88,6 +85,11 @@ public class OperationsController extends BaseController {
         }
 
         Build build = this.buildsService.getBuildById(id);
+        if(build == null){
+            err = ErrorResponse.builder();
+            err.addError("Build does not exist");
+            return err.badRequest();
+        }
 
         Operation op = this.operationsService.add(new BuildOperation(build));
 
@@ -116,11 +118,58 @@ public class OperationsController extends BaseController {
                     .notFound();
         }
 
-        /*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
+       /*
+
+       validate is already in progress
+
+       if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
             return ErrorResponse.builder()
                     .addError("Build is already in progress")
                     .badRequest();
         }*/
+
+        operationsQueueService.addToQueue(op);
+        return ResponseEntity.ok().build();
+    }
+
+
+/*    @PostMapping("/{id}:wait")
+    public ResponseEntity wait(@PathVariable String id) {
+        Operation op = this.operationsService.get(id);
+
+
+        if (op == null) {
+            return ErrorResponse.builder()
+                    .addError("Not found operation")
+                    .notFound();
+        }
+
+        *//*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
+            return ErrorResponse.builder()
+                    .addError("Build is already in progress")
+                    .badRequest();
+        }*//*
+
+        operationsQueueService.addToQueue(op);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}:cancel")
+    public ResponseEntity cancel(@PathVariable String id) {
+        Operation op = this.operationsService.get(id);
+
+
+        if (op == null) {
+            return ErrorResponse.builder()
+                    .addError("Not found operation")
+                    .notFound();
+        }
+
+        *//*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
+            return ErrorResponse.builder()
+                    .addError("Build is already in progress")
+                    .badRequest();
+        }*//*
 
         operationsQueueService.addToQueue(op);
         return ResponseEntity.ok().build();
@@ -146,7 +195,6 @@ public class OperationsController extends BaseController {
             }
         });
         return Response.createdResponse(setToRun);
-    }
-
+    }*/
 
 }

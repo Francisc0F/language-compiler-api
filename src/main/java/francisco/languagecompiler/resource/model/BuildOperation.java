@@ -4,13 +4,12 @@ import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.langadapters.CAdapter;
 import francisco.languagecompiler.resource.langadapters.LangAdapter;
 import francisco.languagecompiler.resource.util.DateUtil;
-import francisco.languagecompiler.resource.util.FieldMaskMapper;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-import static francisco.languagecompiler.resource.util.FieldMaskMapper.getFmStrings;
+import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
 public class BuildOperation extends Operation<Build.BuildResultTOperation>  {
 
@@ -63,20 +62,27 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation>  {
     }
 
     public void addStdOutLine(String outputLine) {
+        buildResult();
         this.metadata.getResult().stdOutLines.add(outputLine);
     }
 
     public void addStdErrorLine(String outputLine) {
+        buildResult();
         this.metadata.getResult().stdErrorLines.add(outputLine);
     }
 
     public void setExitCode(int exitCode) {
+        buildResult();
         this.metadata.getResult().exitCode = exitCode;
     }
 
-    @Override
     public Map<String, Object> toMap(FieldMask fm) {
-        String[] paths = getFmStrings(fm);
-        return FieldMaskMapper.createHashMapWithFields(this, paths);
+        return validateFieldMask(this, fm);
+    }
+
+    private void buildResult() {
+        if(this.getMetadata().getResult() == null){
+            this.metadata.setResult(new Build.BuildResultTOperation());
+        }
     }
 }

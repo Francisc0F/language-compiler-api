@@ -4,6 +4,7 @@ package francisco.languagecompiler.resource.service;
 
 import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.ExecutableOperation;
+import francisco.languagecompiler.resource.model.Operation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -26,7 +27,7 @@ public class OperationRunner implements PropertyChangeListener {
         CompletableFuture.runAsync(() -> {
             try {
                 executableOperation.execute();
-                notifier.notifyComplete((Build) executableOperation);
+                notifier.notifyComplete((Operation) executableOperation);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("Not able to complete -");

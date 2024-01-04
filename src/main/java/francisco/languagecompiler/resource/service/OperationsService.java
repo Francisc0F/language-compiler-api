@@ -19,7 +19,7 @@ public class OperationsService {
 
     public Operation get(String id) {
         return operationList.stream()
-                .filter(build -> Objects.equals(build.getId(), id))
+                .filter(op -> Objects.equals(op.getId(), id))
                 .findFirst()
                 .orElse(null);
     }

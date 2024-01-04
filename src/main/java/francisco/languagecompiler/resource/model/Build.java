@@ -65,7 +65,7 @@ public class Build extends BaseResource implements ResponseMaker {
     }
 
 
-    public class BuildResultTOperation {
+    public static class BuildResultTOperation {
 
         @Getter
         @Setter

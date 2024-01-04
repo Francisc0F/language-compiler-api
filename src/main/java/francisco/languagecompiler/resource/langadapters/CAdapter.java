@@ -1,5 +1,6 @@
 package francisco.languagecompiler.resource.langadapters;
 
+import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.BuildOperation;
 import francisco.languagecompiler.resource.model.BuildStatus;
 
