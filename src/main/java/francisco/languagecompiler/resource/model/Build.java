@@ -15,6 +15,7 @@ public class Build extends BaseResource implements ResponseMaker {
     @Getter
     @Setter
     private String name;
+
     @Getter
     @Setter
     private String code;

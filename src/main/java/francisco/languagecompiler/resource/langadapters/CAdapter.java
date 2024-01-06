@@ -1,6 +1,5 @@
 package francisco.languagecompiler.resource.langadapters;
 
-import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.BuildOperation;
 import francisco.languagecompiler.resource.model.BuildStatus;
 
@@ -26,34 +25,9 @@ public class CAdapter implements LangAdapter {
     public void execute() {
 
         try {
-            String fileName = createCFile();
-
-            String buildCommand = "gcc -o " + fileName.replace(".c", "") + " " + fileName;
-            ProcessBuilder processBuilder = new ProcessBuilder(buildCommand.split("\\s+"));
-            Process process = processBuilder.start();
-
-            InputStream inputStream = process.getInputStream();
-            InputStream errorStream = process.getErrorStream();
-
-            BufferedReader outputReader = new BufferedReader(new InputStreamReader(inputStream));
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
-
-            String outputLine;
-            while ((outputLine = outputReader.readLine()) != null) {
-                this.operation.addStdOutLine(outputLine);
-            }
-
-            String errorLine;
-            while ((errorLine = errorReader.readLine()) != null) {
-                this.operation.addStdErrorLine(errorLine);
-            }
-            outputReader.close();
-            errorReader.close();
-            inputStream.close();
-            errorStream.close();
-
-            int exitCode = process.waitFor();
+            int exitCode = gccCodeCompiler(this.operation);
             System.out.println("Exit code " + exitCode);
+
             this.operation.setExitCode(exitCode);
             if (exitCode == 0) {
                 this.operation.setStatus(BuildStatus.SUCCESS);
@@ -69,9 +43,46 @@ public class CAdapter implements LangAdapter {
         }
     }
 
+    private int gccCodeCompiler(BuildOperation op) throws IOException, InterruptedException {
+        String fileName = createCFile();
+
+        String runableCProgram = fileName.replace(".c", "");
+        String buildCommand = "gcc -o " + runableCProgram + " " + fileName;
+
+        ProcessBuilder processBuilder = new ProcessBuilder(buildCommand.split("\\s+"));
+        Process process = processBuilder.start();
+
+        InputStream inputStream = process.getInputStream();
+        InputStream errorStream = process.getErrorStream();
+
+        BufferedReader outputReader = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
+
+        String outputLine;
+        while ((outputLine = outputReader.readLine()) != null) {
+            op.addStdOutLine(outputLine);
+        }
+
+        String errorLine;
+        while ((errorLine = errorReader.readLine()) != null) {
+            op.addStdErrorLine(errorLine);
+        }
+        outputReader.close();
+        errorReader.close();
+        inputStream.close();
+        errorStream.close();
+
+        int exitCode = process.waitFor();
+        if(exitCode == 0){
+            op.setExecutablePath(runableCProgram);
+        }
+
+        return exitCode;
+    }
+
     private String createCFile() throws IOException {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fileName = this.operation.getOperationName() + "_" + timestamp + ".c";
+        String fileName = this.operation.getOperationFileName() + "_" + timestamp + ".c";
         Path filePath = Path.of(fileName);
         Files.write(filePath, this.operation.getBuildCode().getBytes(), StandardOpenOption.CREATE);
         return fileName;

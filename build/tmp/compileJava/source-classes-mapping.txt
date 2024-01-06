@@ -1,8 +1,8 @@
 francisco/languagecompiler/resource/model/Operation.java
  francisco.languagecompiler.resource.model.Operation
  francisco.languagecompiler.resource.model.Operation$Metadata
-francisco/languagecompiler/resource/service/OperationNotifier.java
- francisco.languagecompiler.resource.service.OperationNotifier
+francisco/languagecompiler/resource/util/observer/OperationPublisher.java
+ francisco.languagecompiler.resource.util.observer.OperationPublisher
 francisco/languagecompiler/resource/model/ExecutableOperation.java
  francisco.languagecompiler.resource.model.ExecutableOperation
 francisco/languagecompiler/resource/BaseController.java
@@ -40,6 +40,8 @@ francisco/languagecompiler/resource/langadapters/LangAdapter.java
  francisco.languagecompiler.resource.langadapters.LangAdapter
 francisco/languagecompiler/resource/langadapters/CAdapter.java
  francisco.languagecompiler.resource.langadapters.CAdapter
+francisco/languagecompiler/resource/util/observer/EventListener.java
+ francisco.languagecompiler.resource.util.observer.EventListener
 francisco/languagecompiler/resource/requests/BatchOperationsRequest.java
  francisco.languagecompiler.resource.requests.BatchOperationsRequest
 francisco/languagecompiler/resource/model/BuildOperation.java

@@ -11,12 +11,16 @@ import java.util.Objects;
 
 import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
-public class BuildOperation extends Operation<Build.BuildResultTOperation>  {
+public class BuildOperation extends Operation<Build.BuildResultTOperation> {
 
     Build build;
 
-    public String getOperationName(){
+    public String getOperationName() {
         return "Op_" + build.getName();
+    }
+
+    public String getOperationFileName() {
+        return "Op_" + build.getName().replace(" ", "_");
     }
 
     public BuildOperation(Build build) {
@@ -70,6 +74,10 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation>  {
         buildResult();
         this.metadata.getResult().stdErrorLines.add(outputLine);
     }
+    public void setExecutablePath(String runPath) {
+        buildResult();
+        this.metadata.getResult().setExecutablePath(runPath);
+    }
 
     public void setExitCode(int exitCode) {
         buildResult();
@@ -81,7 +89,7 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation>  {
     }
 
     private void buildResult() {
-        if(this.getMetadata().getResult() == null){
+        if (this.getMetadata().getResult() == null) {
             this.metadata.setResult(new Build.BuildResultTOperation());
         }
     }
