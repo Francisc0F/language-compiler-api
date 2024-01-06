@@ -1,12 +1,16 @@
 package francisco.languagecompiler.resource.model;
 
+import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.util.ResponseMaker;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Map;
 
-public abstract class Operation<resultT> extends BaseResource implements ResponseMaker, ExecutableOperation {
+import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
+
+public class Operation<resultT> extends BaseResource implements ResponseMaker, ExecutableOperation {
 
     @Getter
     @Setter
@@ -19,6 +23,16 @@ public abstract class Operation<resultT> extends BaseResource implements Respons
         super();
     }
 
+    @Override
+    public void execute() {
+        throw new UnsupportedOperationException("execute method is not implemented");
+    }
+
+    @Override
+    public Map<String, Object> toMap(FieldMask fieldMask) {
+        return validateFieldMask(this, fieldMask);
+    }
+
     public class Metadata extends BaseResource{
 
 
@@ -26,8 +40,6 @@ public abstract class Operation<resultT> extends BaseResource implements Respons
         @Setter
         // code build only in this case
         private String type;
-
-        // id of the type item reference -> build
 
         @Getter
         @Setter

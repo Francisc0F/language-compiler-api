@@ -24,16 +24,6 @@ public class Build extends BaseResource implements ResponseMaker {
     @Setter
     private BuildLang language;
 
-    @Getter
-    @Setter
-    private BuildStatus status = BuildStatus.PENDING;
-    private String reason;
-    private Date startedAt;
-    private Date completedAt;
-
-    List<Operation> previousRunned = new ArrayList<>();
-    Operation opToRun;
-
     public Build(String id, String name, String code) {
         super(id);
         this.name = name;
@@ -47,6 +37,12 @@ public class Build extends BaseResource implements ResponseMaker {
     }
     public Build(String name, String code, BuildLang language) {
         super();
+        this.name = name;
+        this.code = code;
+        this.language = language;
+    }
+    public Build(String id, String name, String code, BuildLang language) {
+        super(id);
         this.name = name;
         this.code = code;
         this.language = language;
@@ -71,6 +67,10 @@ public class Build extends BaseResource implements ResponseMaker {
         @Getter
         @Setter
         public int exitCode;
+
+        @Getter
+        @Setter
+        public BuildStatus status;
 
         @Getter
         @Setter

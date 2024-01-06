@@ -12,8 +12,11 @@ import francisco.languagecompiler.resource.util.StringUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static francisco.languagecompiler.resource.model.BuildLang.getBuildLangFromString;
 
 @RestController
 @RequestMapping("/api/v1/operations")
@@ -72,26 +75,13 @@ public class OperationsController extends BaseController {
         return Response.okResponse(build, fieldMask);
     }
 
-
     @PostMapping
-    public ResponseEntity create(@RequestBody OperationRequest operationRequest,
+    public ResponseEntity create(@RequestBody Operation op,
                                  @RequestParam(name = "fields", required = false) String fields) {
 
         ErrorResponse.Builder err = ErrorResponse.builder();
 
-        String id = operationRequest.getBuildId();
-        if (StringUtil.isNullOrEmpty(id)) {
-            err.addError("Runnable ID not found, it is required to register operation");
-        }
-
-        Build build = this.buildsService.getBuildById(id);
-        if(build == null){
-            err = ErrorResponse.builder();
-            err.addError("Build does not exist");
-            return err.badRequest();
-        }
-
-        Operation op = this.operationsService.add(new BuildOperation(build));
+        this.operationsService.add(op);
 
         if (op == null) {
             err.addError("Not able to register long running operation");
@@ -103,8 +93,43 @@ public class OperationsController extends BaseController {
 
         FieldMask fieldMask = parseFieldMask(fields);
 
-        assert op != null;
         return Response.createdResponse(op, fieldMask);
+    }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity patch(
+            @PathVariable String id,
+            @RequestBody Map<String, Object> updates) {
+
+        Operation modifiedOperation = this.operationsService.get(id);
+
+        if (modifiedOperation == null) {
+            return ErrorResponse.builder()
+                    .addError("Not found operation")
+                    .notFound();
+        }
+        ErrorResponse.Builder err = ErrorResponse.builder();
+
+        if (!updates.containsKey("metadata") || updates.get("metadata") == null) {
+            return err.addError("Metadata is required for the operation").badRequest();
+        }
+
+
+        if (err.hasError()) {
+            return err.badRequest();
+        }
+
+     /*   applyPartialUpdates(modifiedOperation, updates);
+        validateBuild(modifiedOperation);*/
+
+        if (err.hasError()) {
+            return err.badRequest();
+        }
+
+        // Save the updated build
+
+        return Response.okResponse(modifiedOperation);
     }
 
     @PostMapping("/{id}:run")
@@ -132,8 +157,43 @@ public class OperationsController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(":createWithBuildId")
+    public ResponseEntity createFromBuild(@RequestBody OperationRequest operationRequest,
+                                          @RequestParam(name = "fields", required = false) String fields) {
 
-/*    @PostMapping("/{id}:wait")
+        ErrorResponse.Builder err = ErrorResponse.builder();
+
+        String id = operationRequest.getBuildId();
+        if (StringUtil.isNullOrEmpty(id)) {
+            err.addError("Runnable ID not found, it is required to register operation");
+        }
+
+        Build build = this.buildsService.getBuildById(id);
+        if (build == null) {
+            err = ErrorResponse.builder();
+            err.addError("Build does not exist");
+            return err.badRequest();
+        }
+
+        Operation op = this.operationsService.add(new BuildOperation(build));
+
+        if (op == null) {
+            err.addError("Not able to register long running operation");
+        }
+
+        if (err.hasError()) {
+            return err.badRequest();
+        }
+
+        FieldMask fieldMask = parseFieldMask(fields);
+
+        assert op != null;
+        return Response.createdResponse(op, fieldMask);
+    }
+
+
+
+    /*    @PostMapping("/{id}:wait")
     public ResponseEntity wait(@PathVariable String id) {
         Operation op = this.operationsService.get(id);
 
@@ -144,11 +204,13 @@ public class OperationsController extends BaseController {
                     .notFound();
         }
 
-        *//*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
+        */
+    /*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
             return ErrorResponse.builder()
                     .addError("Build is already in progress")
                     .badRequest();
-        }*//*
+        }*/
+    /*
 
         operationsQueueService.addToQueue(op);
         return ResponseEntity.ok().build();
@@ -165,11 +227,13 @@ public class OperationsController extends BaseController {
                     .notFound();
         }
 
-        *//*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
+        */
+    /*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
             return ErrorResponse.builder()
                     .addError("Build is already in progress")
                     .badRequest();
-        }*//*
+        }*/
+    /*
 
         operationsQueueService.addToQueue(op);
         return ResponseEntity.ok().build();
@@ -196,5 +260,4 @@ public class OperationsController extends BaseController {
         });
         return Response.createdResponse(setToRun);
     }*/
-
 }

@@ -14,10 +14,7 @@ import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateF
 public class BuildOperation extends Operation<Build.BuildResultTOperation> {
 
     Build build;
-
-    public String getOperationName() {
-        return "Op_" + build.getName();
-    }
+    String buildId;
 
     public String getOperationFileName() {
         return "Op_" + build.getName().replace(" ", "_");
@@ -31,12 +28,19 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> {
         metadata.setId(build.getId());
     }
 
+    public BuildOperation(String buildId) {
+        super();
+        this.buildId = buildId;
+        metadata = new Metadata();
+        metadata.setType("codecompile");
+        metadata.setId(this.buildId);
+    }
+
     @Override
     public void execute() {
         this.metadata.setStartTime(new Date());
         System.out.println("Started - " + this + " at " + DateUtil.formatDate(this.metadata.getStartTime()));
-        this.build.setStatus(BuildStatus.IN_PROGRESS);
-
+        setStatus(BuildStatus.IN_PROGRESS);
 
         LangAdapter adapter = null;
 
@@ -46,7 +50,8 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> {
 
         if (adapter == null) {
             //reason = "No adapter for " + this.language.getText();
-            this.build.setStatus(BuildStatus.ABORTED);
+            setStatus(BuildStatus.ABORTED);
+
         }
 
         assert adapter != null;
@@ -54,11 +59,11 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> {
 
         System.out.println("Started - " + this + " at " + DateUtil.formatDate(this.metadata.getEndTime()));
         this.metadata.setEndTime(new Date());
-        this.build.setStatus(BuildStatus.SUCCESS);
+        setStatus(BuildStatus.SUCCESS);
     }
 
     public void setStatus(BuildStatus buildStatus) {
-        build.setStatus(buildStatus);
+        metadata.getResult().setStatus(buildStatus);
     }
 
     public String getBuildCode() {

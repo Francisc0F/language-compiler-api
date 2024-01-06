@@ -1,6 +1,7 @@
 package francisco.languagecompiler.resource.util;
 
 import com.google.protobuf.FieldMask;
+import francisco.languagecompiler.resource.model.Build;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,4 +31,7 @@ public class Response {
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
+    static public ResponseEntity<Object> okResponse(ResponseMaker responseBody) {
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
 }

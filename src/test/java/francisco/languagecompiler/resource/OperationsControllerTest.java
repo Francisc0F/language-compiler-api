@@ -23,13 +23,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static francisco.languagecompiler.resource.util.StringUtil.asJsonString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = LanguageCompilerApplication.class)
@@ -84,7 +89,7 @@ class OperationsControllerTest {
     class OperationCreation {
 
         @Test
-        @DisplayName("Create build to create operation")
+        @DisplayName("Create operation from build")
         public void testCreateOperation() throws Exception {
             Build b = new Build();
             OperationRequest operationRequest = new OperationRequest(b.getId());
@@ -103,13 +108,52 @@ class OperationsControllerTest {
                     .andExpect(status().isCreated());
         }
 
+        @Nested
+        @DisplayName("Operation Update Tests")
+        class BuildUpdate {
 
-        @Test
-        @DisplayName("Create build with missing Build id")
-        public void testCreateOperationMissingId() throws Exception {
+            @Test
+            @DisplayName("Test successful build update")
+            void testSuccessfulBuildUpdate() throws Exception {
+
+                Build b = new Build();
+
+                // Mock the behavior of the buildsService
+                when(buildsService.getBuildById(anyString())).thenReturn(b);
+
+                // Prepare request body with valid updates
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("name", "Updated Name");
+                updates.put("language", BuildLang.Java.getText());
+                updates.put("code", "Updated Code");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String content = objectMapper.writeValueAsString(updates);
+
+                mockMvc.perform(patch("/api/v1/builds/" + b.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
+                        .andExpect(status().isOk());
+            }
+
+
+            @Test
+            public void testInvalidBuildUpdate() throws Exception {
+                Build b = new Build();
+                // Mock the behavior of the buildsService
+                when(buildsService.getBuildById(anyString())).thenReturn(b);
+                // Prepare request body with invalid updates (e.g., empty name)
+                Map<String, Object> invalidUpdates = new HashMap<>();
+                invalidUpdates.put("name", ""); // Empty name should trigger an error
+
+                // Perform PATCH request and expect a bad request response
+                mockMvc.perform(patch("/api/v1/builds/" + b.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(invalidUpdates)))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.[0]").value("Name is required for the build"));
+            }
         }
-
-
     }
 
 }

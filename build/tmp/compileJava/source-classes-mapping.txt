@@ -57,3 +57,9 @@ francisco/languagecompiler/resource/service/OperationRunner.java
  francisco.languagecompiler.resource.service.OperationRunner
 francisco/languagecompiler/resource/util/FieldMaskMapper.java
  francisco.languagecompiler.resource.util.FieldMaskMapper
+francisco/languagecompiler/resource/model/Job.java
+ francisco.languagecompiler.resource.model.Job
+francisco/languagecompiler/resource/service/JobsService.java
+ francisco.languagecompiler.resource.service.JobsService
+francisco/languagecompiler/resource/JobsController.java
+ francisco.languagecompiler.resource.JobsController
