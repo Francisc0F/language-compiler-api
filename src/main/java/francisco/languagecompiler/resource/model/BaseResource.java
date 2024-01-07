@@ -1,14 +1,19 @@
 package francisco.languagecompiler.resource.model;
 
+import com.google.protobuf.FieldMask;
+import francisco.languagecompiler.resource.util.ResponseMaker;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
-public abstract class BaseResource {
+
+public abstract class BaseResource implements ResponseMaker {
 
     @Getter
     @Setter
@@ -42,5 +47,11 @@ public abstract class BaseResource {
         if (o == null || getClass() != o.getClass()) return false;
         Build build = (Build) o;
         return Objects.equals(id, build.getId());
+    }
+
+
+    @Override
+    public Map<String, Object> toMap(FieldMask fieldMask) {
+        return validateFieldMask(this, fieldMask);
     }
 }

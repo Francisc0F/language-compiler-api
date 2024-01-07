@@ -22,7 +22,6 @@ import static francisco.languagecompiler.resource.util.StringUtil.asJsonString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
@@ -100,7 +99,7 @@ class BuildsControllerTest {
             Build newBuild = new Build("newBuild", "NewCode", BuildLang.Java);
 
             // Mocking the service response after creating the build
-            given(buildsService.addbuild(any(Build.class))).willReturn(newBuild);
+            given(buildsService.add(any(Build.class))).willReturn(newBuild);
 
             // Performing the POST request
             ObjectMapper objectMapper = new ObjectMapper();
@@ -119,7 +118,7 @@ class BuildsControllerTest {
             newBuild.setLanguage(null);
 
             // Mocking the service response after creating the build
-            given(buildsService.addbuild(any(Build.class))).willReturn(newBuild);
+            given(buildsService.add(any(Build.class))).willReturn(newBuild);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String content = objectMapper.writeValueAsString(newBuild);
@@ -136,7 +135,7 @@ class BuildsControllerTest {
             newBuild.setCode(null);
 
             // Mocking the service response after creating the build
-            given(buildsService.addbuild(any(Build.class))).willReturn(newBuild);
+            given(buildsService.add(any(Build.class))).willReturn(newBuild);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String content = objectMapper.writeValueAsString(newBuild);
@@ -156,7 +155,7 @@ class BuildsControllerTest {
             newBuild.setName(null);
 
             // Mocking the service response after creating the build
-            given(buildsService.addbuild(any(Build.class))).willReturn(newBuild);
+            given(buildsService.add(any(Build.class))).willReturn(newBuild);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String content = objectMapper.writeValueAsString(newBuild);
@@ -177,7 +176,7 @@ class BuildsControllerTest {
             Build b = new Build();
 
             // Mock the behavior of the buildsService
-            when(buildsService.getBuildById(anyString())).thenReturn(b);
+            when(buildsService.get(anyString())).thenReturn(b);
 
             // Prepare request body with valid updates
             Map<String, Object> updates = new HashMap<>();
@@ -199,7 +198,7 @@ class BuildsControllerTest {
         public void testInvalidBuildUpdate() throws Exception {
             Build b = new Build();
             // Mock the behavior of the buildsService
-            when(buildsService.getBuildById(anyString())).thenReturn(b);
+            when(buildsService.get(anyString())).thenReturn(b);
             // Prepare request body with invalid updates (e.g., empty name)
             Map<String, Object> invalidUpdates = new HashMap<>();
             invalidUpdates.put("name", ""); // Empty name should trigger an error

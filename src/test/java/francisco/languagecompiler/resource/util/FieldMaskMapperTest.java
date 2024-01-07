@@ -126,7 +126,7 @@ class FieldMaskMapperTest {
         Map<String, Object> resultMap = FieldMaskMapper.createHashMapWithFields(obj, fieldMask);
 
         // Assert the expected values
-        assertEquals(6, resultMap.size()); // Including base class fields
+        assertEquals(8, resultMap.size()); // Including base class fields
         assertEquals(true, resultMap.get("done"));
         assertEquals("typeA", ((Map<String, Object>) resultMap.get("metadata")).get("type"));
         assertEquals("9876", ((Map<String, Object>) resultMap.get("metadata")).get("id"));

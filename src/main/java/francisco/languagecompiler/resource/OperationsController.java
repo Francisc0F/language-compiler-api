@@ -168,7 +168,7 @@ public class OperationsController extends BaseController {
             err.addError("Runnable ID not found, it is required to register operation");
         }
 
-        Build build = this.buildsService.getBuildById(id);
+        Build build = this.buildsService.get(id);
         if (build == null) {
             err = ErrorResponse.builder();
             err.addError("Build does not exist");

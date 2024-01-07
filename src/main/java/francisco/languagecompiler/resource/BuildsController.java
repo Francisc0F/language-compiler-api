@@ -52,7 +52,7 @@ public class BuildsController extends BaseController {
             @PathVariable String id,
             @RequestParam(name = "fields", required = false) String fields) {
 
-        Build build = this.buildsService.getBuildById(id);
+        Build build = this.buildsService.get(id);
 
         if (build == null) {
             return ErrorResponse.builder()
@@ -87,7 +87,7 @@ public class BuildsController extends BaseController {
             return err.badRequest();
         }
 
-        Build build = this.buildsService.addbuild(buildRequest);
+        Build build = this.buildsService.add(buildRequest);
         FieldMask fieldMask = parseFieldMask(fields);
         return Response.createdResponse(build, fieldMask);
     }
@@ -98,7 +98,7 @@ public class BuildsController extends BaseController {
             @PathVariable String id,
             @RequestBody Map<String, Object> updates) {
 
-        Build modifiedBuild = this.buildsService.getBuildById(id);
+        Build modifiedBuild = this.buildsService.get(id);
 
         if (modifiedBuild == null) {
             return ErrorResponse.builder()
@@ -182,13 +182,13 @@ public class BuildsController extends BaseController {
 
     @DeleteMapping("/{id}")
     public void deleteBuild(@PathVariable String id) {
-        buildsService.removeBuildById(id);
+        buildsService.removeById(id);
     }
 
 
     @PostMapping("/{id}:trigger")
     public ResponseEntity triggerBuild(@PathVariable String id) {
-        Build build = this.buildsService.getBuildById(id);
+        Build build = this.buildsService.get(id);
 
         if (build == null) {
             return ErrorResponse.builder()

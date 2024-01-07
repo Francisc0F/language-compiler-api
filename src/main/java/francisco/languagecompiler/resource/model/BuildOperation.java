@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
-public class BuildOperation extends Operation<Build.BuildResultTOperation> {
+public class BuildOperation extends Operation<BuildResultExecution> {
 
     Build build;
     String buildId;
@@ -63,7 +63,7 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> {
     }
 
     public void setStatus(BuildStatus buildStatus) {
-        metadata.getResult().setStatus(buildStatus);
+        getResult().setStatus(buildStatus);
     }
 
     public String getBuildCode() {
@@ -72,21 +72,21 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> {
 
     public void addStdOutLine(String outputLine) {
         buildResult();
-        this.metadata.getResult().stdOutLines.add(outputLine);
+        getResult().stdOutLines.add(outputLine);
     }
 
     public void addStdErrorLine(String outputLine) {
         buildResult();
-        this.metadata.getResult().stdErrorLines.add(outputLine);
+        getResult().stdErrorLines.add(outputLine);
     }
     public void setExecutablePath(String runPath) {
         buildResult();
-        this.metadata.getResult().setExecutablePath(runPath);
+        getResult().setExecutablePath(runPath);
     }
 
     public void setExitCode(int exitCode) {
         buildResult();
-        this.metadata.getResult().exitCode = exitCode;
+        getResult().exitCode = exitCode;
     }
 
     public Map<String, Object> toMap(FieldMask fm) {
@@ -94,8 +94,8 @@ public class BuildOperation extends Operation<Build.BuildResultTOperation> {
     }
 
     private void buildResult() {
-        if (this.getMetadata().getResult() == null) {
-            this.metadata.setResult(new Build.BuildResultTOperation());
+        if (getResult() == null) {
+            setResult(new BuildResultExecution());
         }
     }
 }

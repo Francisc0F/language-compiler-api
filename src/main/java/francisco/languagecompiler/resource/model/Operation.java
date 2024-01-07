@@ -10,11 +10,15 @@ import java.util.Map;
 
 import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
-public class Operation<resultT> extends BaseResource implements ResponseMaker, ExecutableOperation {
+public class Operation<resultExecutionT extends Execution> extends BaseResource implements ExecutableOperation {
 
     @Getter
     @Setter
     public boolean done = false;
+
+    @Getter
+    @Setter
+    private resultExecutionT result;
 
     @Getter
     public Metadata metadata;
@@ -28,13 +32,7 @@ public class Operation<resultT> extends BaseResource implements ResponseMaker, E
         throw new UnsupportedOperationException("execute method is not implemented");
     }
 
-    @Override
-    public Map<String, Object> toMap(FieldMask fieldMask) {
-        return validateFieldMask(this, fieldMask);
-    }
-
     public class Metadata extends BaseResource{
-
 
         @Getter
         @Setter
@@ -52,9 +50,6 @@ public class Operation<resultT> extends BaseResource implements ResponseMaker, E
         @Setter
         // progress in percentage
         private int progress;
-        @Getter
-        @Setter
-        private resultT result;
 
         Metadata(){
             super();

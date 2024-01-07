@@ -76,8 +76,7 @@ class OperationsControllerTest {
                     .andExpect(MockMvcResultMatchers.jsonPath("$.[0].done").value(ops.get(0).isDone()))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.[0].build.name").value("build1"))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.[0].build.code").value("Code1"))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.[0].build.language").value(BuildLang.C.getText())) // Update as needed
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.[0].build.status").value("PENDING"));
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.[0].build.language").value(BuildLang.C.getText())); // Update as needed
 
         }
 
@@ -97,7 +96,7 @@ class OperationsControllerTest {
             BuildOperation obj = new BuildOperation(b);
 
             when(operationsService.add(any(Operation.class))).thenReturn(obj);
-            when(buildsService.getBuildById(any(String.class))).thenReturn(b);
+            when(buildsService.get(any(String.class))).thenReturn(b);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String content = objectMapper.writeValueAsString(operationRequest);
@@ -119,7 +118,7 @@ class OperationsControllerTest {
                 Build b = new Build();
 
                 // Mock the behavior of the buildsService
-                when(buildsService.getBuildById(anyString())).thenReturn(b);
+                when(buildsService.get(anyString())).thenReturn(b);
 
                 // Prepare request body with valid updates
                 Map<String, Object> updates = new HashMap<>();
@@ -141,7 +140,7 @@ class OperationsControllerTest {
             public void testInvalidBuildUpdate() throws Exception {
                 Build b = new Build();
                 // Mock the behavior of the buildsService
-                when(buildsService.getBuildById(anyString())).thenReturn(b);
+                when(buildsService.get(anyString())).thenReturn(b);
                 // Prepare request body with invalid updates (e.g., empty name)
                 Map<String, Object> invalidUpdates = new HashMap<>();
                 invalidUpdates.put("name", ""); // Empty name should trigger an error

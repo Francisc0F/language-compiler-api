@@ -10,38 +10,13 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @Service
-public class BuildsService {
-    List<Build> buildsList = new ArrayList<>();
+public class BuildsService extends BaseService<Build> {
 
     public BuildsService() {
-        buildsList.add(new Build("5d4e1e78-804b-4417-a4c7-fbcf2eddd8ea",
+        items.add(new Build("5d4e1e78-804b-4417-a4c7-fbcf2eddd8ea",
                 "C Build",
                 "#include <stdio.h>\n int main() {\n printf(\"Hello, World!\");\n return 0;\n}",
                 BuildLang.C));
-        buildsList.add(new Build("C Build with Error", "#include <stdio.h>\n int maXin() {\n printf(\"Hello, World!\");\n return 0;\n}", BuildLang.C));
-    }
-
-    public Stream<Build> getStream() {
-        return buildsList.stream();
-    }
-
-    public Build getBuildById(String id) {
-        return buildsList.stream()
-                .filter(build -> Objects.equals(build.getId(), id))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public void removeBuildById(String id) {
-        // Remove the Build with the specified ID
-        buildsList.removeIf(build -> Objects.equals(build.getId(), id));
-    }
-
-    public Build addbuild(Build newBuild) {
-        buildsList.add(newBuild);
-        return newBuild;
-    }
-
-    public void updateBuild(Build existingBuild) {
+        items.add(new Build("C Build with Error", "#include <stdio.h>\n int maXin() {\n printf(\"Hello, World!\");\n return 0;\n}", BuildLang.C));
     }
 }

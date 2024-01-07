@@ -10,7 +10,7 @@ import java.util.*;
 
 import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
-public class Build extends BaseResource implements ResponseMaker {
+public class Build extends BaseResource  {
 
     @Getter
     @Setter
@@ -52,35 +52,8 @@ public class Build extends BaseResource implements ResponseMaker {
         super();
     }
 
-    public Map<String, Object> toMap(FieldMask fm) {
-        return validateFieldMask(this, fm);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, name, code);
-    }
-
-
-    public static class BuildResultTOperation {
-
-        @Getter
-        @Setter
-        public int exitCode;
-
-        @Getter
-        @Setter
-        public BuildStatus status;
-
-        @Getter
-        @Setter
-        List<String> stdErrorLines = new ArrayList<>();
-        @Getter
-        @Setter
-        List<String> stdOutLines = new ArrayList<>();
-        @Getter
-        @Setter
-        String executablePath;
-
     }
 }

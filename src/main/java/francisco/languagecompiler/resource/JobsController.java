@@ -1,29 +1,21 @@
 package francisco.languagecompiler.resource;
 
 import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.model.Build;
-import francisco.languagecompiler.resource.model.BuildOperation;
 import francisco.languagecompiler.resource.model.Job;
-import francisco.languagecompiler.resource.model.Operation;
-import francisco.languagecompiler.resource.requests.OperationRequest;
-import francisco.languagecompiler.resource.service.BuildsService;
 import francisco.languagecompiler.resource.service.JobsService;
-import francisco.languagecompiler.resource.service.OperationQueueService;
-import francisco.languagecompiler.resource.service.OperationsService;
 import francisco.languagecompiler.resource.util.ErrorResponse;
 import francisco.languagecompiler.resource.util.Response;
-import francisco.languagecompiler.resource.util.StringUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/jobs")
 public class JobsController extends BaseController {
     private final JobsService jobsService;
+
 
     public JobsController(JobsService jobsService) {
         this.jobsService = jobsService;
@@ -36,11 +28,11 @@ public class JobsController extends BaseController {
 
         Stream<Job> stream = this.jobsService.getStream();
 
-     /*   if (done != null) {
+        if (done != null) {
             stream = stream.filter(op ->
                     (op.isDone() == Boolean.getBoolean(done))
             );
-        }*/
+        }
 
         FieldMask fieldMask = parseFieldMask(fields);
         return Response.okResponse(stream, fieldMask);
@@ -65,14 +57,14 @@ public class JobsController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody Job op,
+    public ResponseEntity create(@RequestBody Job job,
                                  @RequestParam(name = "fields", required = false) String fields) {
 
         ErrorResponse.Builder err = ErrorResponse.builder();
 
-        this.jobsService.add(op);
+        this.jobsService.add(job);
 
-        if (op == null) {
+        if (job == null) {
             err.addError("Not able to register long running operation");
         }
 
@@ -82,7 +74,7 @@ public class JobsController extends BaseController {
 
         FieldMask fieldMask = parseFieldMask(fields);
 
-        return Response.createdResponse(op, fieldMask);
+        return Response.createdResponse(job, fieldMask);
     }
 
 
@@ -128,21 +120,11 @@ public class JobsController extends BaseController {
 
         if (op == null) {
             return ErrorResponse.builder()
-                    .addError("Not found operation")
+                    .addError("Not found Job")
                     .notFound();
         }
 
-       /*
 
-       validate is already in progress
-
-       if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
-            return ErrorResponse.builder()
-                    .addError("Build is already in progress")
-                    .badRequest();
-        }*/
-
-        //operationsQueueService.addToQueue(op);
         return ResponseEntity.ok().build();
     }
 }
