@@ -1,14 +1,10 @@
 package francisco.languagecompiler.resource.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.util.ResponseMaker;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
-
-import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
 public class Build extends BaseResource  {
 

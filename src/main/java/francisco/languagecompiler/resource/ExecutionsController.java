@@ -2,21 +2,18 @@ package francisco.languagecompiler.resource;
 
 import com.google.protobuf.FieldMask;
 import francisco.languagecompiler.resource.model.Execution;
-import francisco.languagecompiler.resource.model.Job;
 import francisco.languagecompiler.resource.service.ExecutionsService;
 import francisco.languagecompiler.resource.util.ErrorResponse;
 import francisco.languagecompiler.resource.util.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/executions")
 public class ExecutionsController extends BaseController {
     private final ExecutionsService executionsService;
-
 
     public ExecutionsController(ExecutionsService executionsService) {
         this.executionsService = executionsService;

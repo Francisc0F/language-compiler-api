@@ -1,8 +1,11 @@
 package francisco.languagecompiler.resource;
 
 import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.model.Job;
+import francisco.languagecompiler.resource.model.*;
+import francisco.languagecompiler.resource.service.BuildsService;
 import francisco.languagecompiler.resource.service.JobsService;
+import francisco.languagecompiler.resource.service.OperationQueueService;
+import francisco.languagecompiler.resource.service.OperationsService;
 import francisco.languagecompiler.resource.util.ErrorResponse;
 import francisco.languagecompiler.resource.util.Response;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +18,19 @@ import java.util.stream.Stream;
 @RequestMapping("/api/v1/jobs")
 public class JobsController extends BaseController {
     private final JobsService jobsService;
+    private final OperationsService operationsService;
+    private final OperationQueueService operationQueueService;
+    private final BuildsService buildsService;
 
 
-    public JobsController(JobsService jobsService) {
+    public JobsController(JobsService jobsService,
+                          OperationsService operationsService,
+                          BuildsService buildsService,
+                          OperationQueueService operationQueueService) {
         this.jobsService = jobsService;
+        this.operationsService = operationsService;
+        this.buildsService = buildsService;
+        this.operationQueueService = operationQueueService;
     }
 
     @GetMapping
@@ -116,13 +128,20 @@ public class JobsController extends BaseController {
     @PostMapping("/{id}:run")
     public ResponseEntity run(@PathVariable String id) {
         Job op = this.jobsService.get(id);
-
-
         if (op == null) {
             return ErrorResponse.builder()
                     .addError("Not found Job")
                     .notFound();
         }
+
+        Build a =buildsService.get(op.getBuildId());
+
+
+        JobRunnable runnable = new JobRunnable(op, operationQueueService, a);
+        runnable.setOperationsService(operationsService);
+        runnable.scheduleJob();
+
+
 
 
         return ResponseEntity.ok().build();

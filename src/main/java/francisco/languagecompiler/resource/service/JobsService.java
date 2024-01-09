@@ -1,6 +1,5 @@
 package francisco.languagecompiler.resource.service;
 
-import francisco.languagecompiler.resource.model.Execution;
 import francisco.languagecompiler.resource.model.Job;
 import org.springframework.stereotype.Service;
 

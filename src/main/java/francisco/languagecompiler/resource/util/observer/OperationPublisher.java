@@ -50,7 +50,7 @@ public class OperationPublisher {
         notify("run", op);
     }
 
-    public void subscribeOperationCompleted(OperationQueueService operationQueueService) {
+    public void subscribeOperationCompleted(EventListener<Operation> operationQueueService) {
         subscribe("complete", operationQueueService);
     }
 }

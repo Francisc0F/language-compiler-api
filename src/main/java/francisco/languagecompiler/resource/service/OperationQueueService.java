@@ -4,15 +4,16 @@ import francisco.languagecompiler.resource.model.ExecutableOperation;
 import francisco.languagecompiler.resource.model.Operation;
 import francisco.languagecompiler.resource.util.observer.EventListener;
 import francisco.languagecompiler.resource.util.observer.OperationPublisher;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-
 @Service
 public class OperationQueueService implements EventListener<Operation> {
-    OperationPublisher notifier = new OperationPublisher("run", "complete");
+    @Getter
+    private final OperationPublisher notifier = new OperationPublisher("run", "complete");
     OperationRunner runner = new OperationRunner(notifier);
     private final Queue<ExecutableOperation> operationsQueue = new LinkedList<>();
 
@@ -20,6 +21,7 @@ public class OperationQueueService implements EventListener<Operation> {
         notifier.subscribeOperationStarted(runner);
         notifier.subscribeOperationCompleted(this);
     }
+
 
     public void addToQueue(ExecutableOperation executableOperation) {
         if (operationsQueue.isEmpty()) {

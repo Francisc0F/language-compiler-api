@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
-public class BuildResultExecution extends Execution {
+public class BuildResultExecution extends Execution implements Cloneable {
 
     public int exitCode;
 
@@ -19,4 +20,20 @@ public class BuildResultExecution extends Execution {
     List<String> stdOutLines = new ArrayList<>();
 
     String executablePath;
+
+    private Date startedAt;
+    private Date completedAt;
+
+    @Override
+    public BuildResultExecution clone() {
+        BuildResultExecution clonedExecution = new BuildResultExecution();
+        clonedExecution.exitCode = this.exitCode;
+        clonedExecution.startedAt = this.startedAt;
+        clonedExecution.completedAt = this.completedAt;
+        clonedExecution.status = status; // Assuming BuildStatus is also cloneable
+        clonedExecution.stdErrorLines = new ArrayList<>(this.stdErrorLines);
+        clonedExecution.stdOutLines = new ArrayList<>(this.stdOutLines);
+        clonedExecution.executablePath = this.executablePath;
+        return clonedExecution;
+    }
 }

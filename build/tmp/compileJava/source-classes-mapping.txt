@@ -17,11 +17,11 @@ francisco/languagecompiler/resource/service/BaseService.java
  francisco.languagecompiler.resource.service.BaseService
 francisco/languagecompiler/resource/service/OperationsService.java
  francisco.languagecompiler.resource.service.OperationsService
+francisco/languagecompiler/resource/service/BuildsService.java
+ francisco.languagecompiler.resource.service.BuildsService
 francisco/languagecompiler/resource/util/ErrorResponse.java
  francisco.languagecompiler.resource.util.ErrorResponse
  francisco.languagecompiler.resource.util.ErrorResponse$Builder
-francisco/languagecompiler/resource/service/BuildsService.java
- francisco.languagecompiler.resource.service.BuildsService
 francisco/languagecompiler/resource/util/Response.java
  francisco.languagecompiler.resource.util.Response
 francisco/languagecompiler/resource/model/BaseResource.java

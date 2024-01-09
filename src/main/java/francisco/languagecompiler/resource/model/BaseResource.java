@@ -18,7 +18,7 @@ public abstract class BaseResource implements ResponseMaker {
     @Getter
     @Setter
     public String id;
-    private final Date createdDate;
+    private Date createdDate;
     private Date updatedDate;
 
     public BaseResource() {

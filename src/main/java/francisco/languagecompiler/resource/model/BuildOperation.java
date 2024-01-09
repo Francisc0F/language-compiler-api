@@ -51,7 +51,6 @@ public class BuildOperation extends Operation<BuildResultExecution> {
         if (adapter == null) {
             //reason = "No adapter for " + this.language.getText();
             setStatus(BuildStatus.ABORTED);
-
         }
 
         assert adapter != null;
@@ -63,6 +62,7 @@ public class BuildOperation extends Operation<BuildResultExecution> {
     }
 
     public void setStatus(BuildStatus buildStatus) {
+        buildResult();
         getResult().setStatus(buildStatus);
     }
 

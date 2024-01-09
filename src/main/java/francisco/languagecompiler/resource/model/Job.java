@@ -1,16 +1,9 @@
 package francisco.languagecompiler.resource.model;
 
-import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.util.ResponseMaker;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
 public class Job extends BaseResource  {
 
@@ -22,13 +15,6 @@ public class Job extends BaseResource  {
     @Setter
     private boolean done;
 
-
-    @Getter
-    @Setter
-    /**
-     *  create operation for each run
-     */
-    private boolean createOperation;
 
     @Getter
     @Setter
