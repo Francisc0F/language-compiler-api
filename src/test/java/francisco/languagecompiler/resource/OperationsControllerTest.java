@@ -50,7 +50,6 @@ class OperationsControllerTest {
     @MockBean
     private BuildsService buildsService;
 
-
     @AfterEach
     void tearDown() {
         Mockito.reset(operationsService, buildsService);
@@ -61,12 +60,15 @@ class OperationsControllerTest {
     class OperationList {
 
         @Test
-        @DisplayName("Get Builds - Standard")
+        @DisplayName("Get Operations - Standard")
         public void testGetBuilds() throws Exception {
+            Build.Builder b = new Build.Builder();
+
+
             // Mocking the service response
             List<Operation> ops = Arrays.asList(
-                    new BuildOperation( new Build("build1", "Code1", BuildLang.C)),
-                    new BuildOperation( new Build("3", "Code 324", BuildLang.Java))
+                    new BuildOperation( b.C("build1", "Code1")),
+                    new BuildOperation( b.C("3", "Code 324"))
             );
             given(operationsService.getStream()).willReturn(ops.stream());
 

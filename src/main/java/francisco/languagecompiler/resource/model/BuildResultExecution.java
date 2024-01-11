@@ -19,6 +19,8 @@ public class BuildResultExecution extends Execution implements Cloneable {
 
     List<String> stdOutLines = new ArrayList<>();
 
+    String errBuildReason;
+
     String executablePath;
 
     private Date startedAt;
@@ -30,7 +32,8 @@ public class BuildResultExecution extends Execution implements Cloneable {
         clonedExecution.exitCode = this.exitCode;
         clonedExecution.startedAt = this.startedAt;
         clonedExecution.completedAt = this.completedAt;
-        clonedExecution.status = status; // Assuming BuildStatus is also cloneable
+        clonedExecution.errBuildReason = this.errBuildReason;
+        clonedExecution.status = status;
         clonedExecution.stdErrorLines = new ArrayList<>(this.stdErrorLines);
         clonedExecution.stdOutLines = new ArrayList<>(this.stdOutLines);
         clonedExecution.executablePath = this.executablePath;

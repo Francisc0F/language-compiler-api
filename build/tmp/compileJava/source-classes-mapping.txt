@@ -1,3 +1,5 @@
+francisco/languagecompiler/resource/langadapters/JavacAdapter.java
+ francisco.languagecompiler.resource.langadapters.JavacAdapter
 francisco/languagecompiler/resource/service/ExecutionsService.java
  francisco.languagecompiler.resource.service.ExecutionsService
 francisco/languagecompiler/resource/model/Operation.java
@@ -46,20 +48,24 @@ francisco/languagecompiler/resource/model/Job.java
  francisco.languagecompiler.resource.model.Job
 francisco/languagecompiler/resource/langadapters/LangAdapter.java
  francisco.languagecompiler.resource.langadapters.LangAdapter
+francisco/languagecompiler/resource/langadapters/JSAdapter.java
+ francisco.languagecompiler.resource.langadapters.JSAdapter
 francisco/languagecompiler/resource/model/JobRunnable.java
  francisco.languagecompiler.resource.model.JobRunnable
+francisco/languagecompiler/resource/langadapters/GccAdapter.java
+ francisco.languagecompiler.resource.langadapters.GccAdapter
 francisco/languagecompiler/resource/model/BuildResultExecution.java
  francisco.languagecompiler.resource.model.BuildResultExecution
 francisco/languagecompiler/resource/JobsController.java
  francisco.languagecompiler.resource.JobsController
-francisco/languagecompiler/resource/langadapters/CAdapter.java
- francisco.languagecompiler.resource.langadapters.CAdapter
 francisco/languagecompiler/resource/util/observer/EventListener.java
  francisco.languagecompiler.resource.util.observer.EventListener
 francisco/languagecompiler/resource/requests/BatchOperationsRequest.java
  francisco.languagecompiler.resource.requests.BatchOperationsRequest
 francisco/languagecompiler/resource/model/BuildOperation.java
  francisco.languagecompiler.resource.model.BuildOperation
+francisco/languagecompiler/resource/langadapters/BaseCompilerAdapter.java
+ francisco.languagecompiler.resource.langadapters.BaseCompilerAdapter
 francisco/languagecompiler/resource/util/DateUtil.java
  francisco.languagecompiler.resource.util.DateUtil
 francisco/languagecompiler/resource/service/JobsService.java
@@ -68,6 +74,7 @@ francisco/languagecompiler/resource/service/OperationQueueService.java
  francisco.languagecompiler.resource.service.OperationQueueService
 francisco/languagecompiler/resource/model/Build.java
  francisco.languagecompiler.resource.model.Build
+ francisco.languagecompiler.resource.model.Build$Builder
 francisco/languagecompiler/resource/service/OperationRunner.java
  francisco.languagecompiler.resource.service.OperationRunner
 francisco/languagecompiler/resource/util/FieldMaskMapper.java

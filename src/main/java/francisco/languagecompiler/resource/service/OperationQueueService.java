@@ -12,12 +12,14 @@ import java.util.Queue;
 
 @Service
 public class OperationQueueService implements EventListener<Operation> {
+
     @Getter
-    private final OperationPublisher notifier = new OperationPublisher("run", "complete");
+    private OperationPublisher notifier = new OperationPublisher("run", "complete");
     OperationRunner runner = new OperationRunner(notifier);
     private final Queue<ExecutableOperation> operationsQueue = new LinkedList<>();
 
     OperationQueueService() {
+        System.out.println("OperationQueueService");
         notifier.subscribeOperationStarted(runner);
         notifier.subscribeOperationCompleted(this);
     }

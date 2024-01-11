@@ -1,6 +1,8 @@
 package francisco.languagecompiler.resource.service;
 
 
+import francisco.languagecompiler.resource.model.BuildOperation;
+import francisco.languagecompiler.resource.model.BuildResultExecution;
 import francisco.languagecompiler.resource.model.ExecutableOperation;
 import francisco.languagecompiler.resource.model.Operation;
 import francisco.languagecompiler.resource.util.observer.EventListener;
@@ -25,10 +27,11 @@ public class OperationRunner implements EventListener<Operation> {
         CompletableFuture.runAsync(() -> {
             try {
                 executableOperation.execute();
-                operationPublisher.notify("complete", (Operation) executableOperation);
             } catch (Exception ex) {
-                ex.printStackTrace();
-                System.out.println("Not able to complete -");
+                ((BuildOperation) obj).setExecutionStoppedReason(ex.getMessage());
+            } finally {
+                operationPublisher.notify("complete", (Operation) executableOperation);
+                obj.setDone(true);
             }
         });
     }

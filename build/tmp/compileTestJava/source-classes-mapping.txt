@@ -1,10 +1,5 @@
 francisco/languagecompiler/LanguageCompilerApplicationTests.java
  francisco.languagecompiler.LanguageCompilerApplicationTests
-francisco/languagecompiler/resource/BuildsControllerTest.java
- francisco.languagecompiler.resource.BuildsControllerTest
- francisco.languagecompiler.resource.BuildsControllerTest$BuildCreation
- francisco.languagecompiler.resource.BuildsControllerTest$BuildRetrievalTests
- francisco.languagecompiler.resource.BuildsControllerTest$BuildUpdate
 francisco/languagecompiler/resource/util/FieldMaskMapperTest.java
  francisco.languagecompiler.resource.util.FieldMaskMapperTest
 francisco/languagecompiler/resource/OperationsControllerTest.java
@@ -12,3 +7,8 @@ francisco/languagecompiler/resource/OperationsControllerTest.java
  francisco.languagecompiler.resource.OperationsControllerTest$OperationCreation
  francisco.languagecompiler.resource.OperationsControllerTest$OperationCreation$BuildUpdate
  francisco.languagecompiler.resource.OperationsControllerTest$OperationList
+francisco/languagecompiler/resource/BuildsControllerTest.java
+ francisco.languagecompiler.resource.BuildsControllerTest
+ francisco.languagecompiler.resource.BuildsControllerTest$BuildCreation
+ francisco.languagecompiler.resource.BuildsControllerTest$BuildRetrievalTests
+ francisco.languagecompiler.resource.BuildsControllerTest$BuildUpdate

@@ -103,8 +103,8 @@ class FieldMaskMapperTest {
         FieldMask fm = fmBuilder.build();
 
         String[] paths = getFmStrings(fm);
-
-        FieldMaskMapper.createHashMapWithFields(new Build("batata", "feijao"), paths);
+                                                Build.Builder b = new Build.Builder();
+        FieldMaskMapper.createHashMapWithFields(b.C("test", "code"), paths);
     }
 
     @Test

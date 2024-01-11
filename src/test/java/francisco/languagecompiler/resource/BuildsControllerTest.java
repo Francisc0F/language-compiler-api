@@ -3,11 +3,9 @@ package francisco.languagecompiler.resource;
 import francisco.languagecompiler.resource.model.Build;
 import francisco.languagecompiler.resource.model.BuildLang;
 import francisco.languagecompiler.resource.service.BuildsService;
+import francisco.languagecompiler.resource.service.ExecutionsService;
 import francisco.languagecompiler.resource.service.OperationQueueService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,12 +44,16 @@ class BuildsControllerTest {
     @MockBean
     private BuildsService buildsService;
 
+
+    @MockBean
+    ExecutionsService executionsService;
+
     @MockBean
     private OperationQueueService operationQueueService;
 
     @AfterEach
     void tearDown() {
-        Mockito.reset(buildsService, operationQueueService);
+        Mockito.reset(buildsService, operationQueueService, executionsService);
     }
 
     @Nested
@@ -61,14 +63,18 @@ class BuildsControllerTest {
         @Test
         @DisplayName("Get Builds - test MediaType.APPLICATION_JSON")
         public void testJson() throws Exception {
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/builds")).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/builds"))
+                    .andExpect(status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
         }
 
         @Test
         @DisplayName("Get Builds - Standard")
         public void testGetBuilds() throws Exception {
+            Build.Builder b = new Build.Builder();
             // Mocking the service response
-            List<Build> builds = Arrays.asList(new Build("build1", "Code1", BuildLang.C), new Build("build2", "Code223232323", BuildLang.C));
+            List<Build> builds = Arrays.asList(b.C("build1", "Code1"),
+                    b.C("build2", "Code223232323"));
             given(buildsService.getStream()).willReturn(builds.stream());
 
             // Performing the GET request
@@ -96,7 +102,9 @@ class BuildsControllerTest {
         @DisplayName("Build Create")
         public void testCreateBuild() throws Exception {
             // Mocking the new build data
-            Build newBuild = new Build("newBuild", "NewCode", BuildLang.Java);
+            String code = "public class HelloWorld {\n public static void main(String[] args) {\n" + "        System.out.println(\"Hello, World!\");\n" + "    }\n" + "}";
+            Build newBuild = new Build.Builder().Java("newBuild", code);
+
 
             // Mocking the service response after creating the build
             given(buildsService.add(any(Build.class))).willReturn(newBuild);
@@ -106,7 +114,7 @@ class BuildsControllerTest {
 
             String content = objectMapper.writeValueAsString(newBuild);
 
-            mockMvc.perform(post("/api/v1/builds").contentType(MediaType.APPLICATION_JSON).content(content)).andExpect(status().isCreated()).andExpect(MockMvcResultMatchers.jsonPath("$.name").value("newBuild")).andExpect(MockMvcResultMatchers.jsonPath("$.code").value("NewCode")).andExpect(MockMvcResultMatchers.jsonPath("$.language").value("Java"));
+            mockMvc.perform(post("/api/v1/builds").contentType(MediaType.APPLICATION_JSON).content(content)).andExpect(status().isCreated()).andExpect(MockMvcResultMatchers.jsonPath("$.name").value("newBuild")).andExpect(MockMvcResultMatchers.jsonPath("$.code").value(code)).andExpect(MockMvcResultMatchers.jsonPath("$.language").value("Java"));
         }
 
 
@@ -172,8 +180,8 @@ class BuildsControllerTest {
         @Test
         @DisplayName("Test successful build update")
         void testSuccessfulBuildUpdate() throws Exception {
-
-            Build b = new Build();
+            Build.Builder builder = new Build.Builder();
+            Build b = builder.C("build1", "Code1");
 
             // Mock the behavior of the buildsService
             when(buildsService.get(anyString())).thenReturn(b);
@@ -196,7 +204,8 @@ class BuildsControllerTest {
 
         @Test
         public void testInvalidBuildUpdate() throws Exception {
-            Build b = new Build();
+            Build.Builder builder = new Build.Builder();
+            Build b = builder.C("build1", "Code1");
             // Mock the behavior of the buildsService
             when(buildsService.get(anyString())).thenReturn(b);
             // Prepare request body with invalid updates (e.g., empty name)

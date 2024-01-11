@@ -7,7 +7,9 @@ public enum BuildLang {
     Unknown("Unknown"),
     C("C"),
     CPlusPlus("C++"),
-    Java("Java");
+    Java("Java"),
+
+    Javascript("Javascript");
 
     private final String text;
 

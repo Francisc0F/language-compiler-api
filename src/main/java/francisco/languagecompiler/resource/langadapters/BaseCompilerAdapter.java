@@ -13,42 +13,17 @@ import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-// more like a decorator
-public class CAdapter implements LangAdapter {
-    BuildOperation operation;
+public abstract  class BaseCompilerAdapter implements LangAdapter{
 
-    public CAdapter(BuildOperation operation) {
+    protected BuildOperation operation;
+
+    BaseCompilerAdapter(BuildOperation operation){
         this.operation = operation;
     }
 
-    @Override
-    public void execute() {
+    abstract int langCompiler(BuildOperation op) throws InterruptedException, IOException;
 
-        try {
-            int exitCode = gccCodeCompiler(this.operation);
-            System.out.println("Exit code " + exitCode);
-
-            this.operation.setExitCode(exitCode);
-            if (exitCode == 0) {
-                this.operation.setStatus(BuildStatus.SUCCESS);
-            } else {
-                this.operation.setStatus(BuildStatus.FAILURE);
-            }
-        } catch (InterruptedException e) {
-            this.operation.setStatus(BuildStatus.FAILURE);
-
-        } catch (IOException e) {
-            this.operation.setStatus(BuildStatus.FAILURE);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private int gccCodeCompiler(BuildOperation op) throws IOException, InterruptedException {
-        String fileName = createCFile();
-
-        String runableCProgram = fileName.replace(".c", "");
-        String buildCommand = "gcc -o " + runableCProgram + " " + fileName;
-
+    protected int runProcessFor(BuildOperation op, String buildCommand) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(buildCommand.split("\\s+"));
         Process process = processBuilder.start();
 
@@ -67,24 +42,43 @@ public class CAdapter implements LangAdapter {
         while ((errorLine = errorReader.readLine()) != null) {
             op.addStdErrorLine(errorLine);
         }
+
+
         outputReader.close();
         errorReader.close();
         inputStream.close();
         errorStream.close();
 
         int exitCode = process.waitFor();
-        if(exitCode == 0){
-            op.setExecutablePath(runableCProgram);
-        }
-
         return exitCode;
     }
 
-    private String createCFile() throws IOException {
+    protected  String createFile(String fileFormat) throws IOException {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fileName = this.operation.getOperationFileName() + "_" + timestamp + ".c";
+        String fileName = this.operation.getOperationFileName() + "_" + timestamp + "." + fileFormat;
         Path filePath = Path.of(fileName);
         Files.write(filePath, this.operation.getBuildCode().getBytes(), StandardOpenOption.CREATE);
         return fileName;
+    }
+
+    @Override
+    public void execute() {
+
+        try {
+            int exitCode = langCompiler(this.operation);
+
+            this.operation.setExitCode(exitCode);
+            if (exitCode == 0) {
+                this.operation.setStatus(BuildStatus.SUCCESS);
+            } else {
+                this.operation.setStatus(BuildStatus.FAILURE);
+            }
+        } catch (InterruptedException e) {
+            this.operation.setStatus(BuildStatus.FAILURE);
+
+        } catch (IOException e) {
+            this.operation.setStatus(BuildStatus.FAILURE);
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,7 +1,9 @@
 package francisco.languagecompiler.resource.model;
 
 import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.langadapters.CAdapter;
+import francisco.languagecompiler.resource.langadapters.GccAdapter;
+import francisco.languagecompiler.resource.langadapters.JSAdapter;
+import francisco.languagecompiler.resource.langadapters.JavacAdapter;
 import francisco.languagecompiler.resource.langadapters.LangAdapter;
 import francisco.languagecompiler.resource.util.DateUtil;
 
@@ -42,23 +44,34 @@ public class BuildOperation extends Operation<BuildResultExecution> {
         System.out.println("Started - " + this + " at " + DateUtil.formatDate(this.metadata.getStartTime()));
         setStatus(BuildStatus.IN_PROGRESS);
 
-        LangAdapter adapter = null;
-
-        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.C) {
-            adapter = new CAdapter(this);
-        }
-
+        LangAdapter adapter = createLanguageAdapter();
         if (adapter == null) {
             //reason = "No adapter for " + this.language.getText();
             setStatus(BuildStatus.ABORTED);
         }
-
         assert adapter != null;
         adapter.execute();
 
         System.out.println("Started - " + this + " at " + DateUtil.formatDate(this.metadata.getEndTime()));
         this.metadata.setEndTime(new Date());
         setStatus(BuildStatus.SUCCESS);
+    }
+
+    private LangAdapter createLanguageAdapter() {
+        LangAdapter adapter = null;
+
+        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.C) {
+            adapter = new GccAdapter(this);
+        }
+        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.Javascript) {
+            adapter = new JSAdapter(this);
+        }
+
+        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.Java) {
+            adapter = new JavacAdapter(this);
+        }
+
+        return adapter;
     }
 
     public void setStatus(BuildStatus buildStatus) {
@@ -97,5 +110,10 @@ public class BuildOperation extends Operation<BuildResultExecution> {
         if (getResult() == null) {
             setResult(new BuildResultExecution());
         }
+    }
+
+    public void setExecutionStoppedReason(String message) {
+        buildResult();
+        getResult().errBuildReason = message;
     }
 }
