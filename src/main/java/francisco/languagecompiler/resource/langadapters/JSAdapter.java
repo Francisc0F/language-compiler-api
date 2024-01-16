@@ -18,11 +18,14 @@ public class JSAdapter extends BaseCompilerAdapter {
         // because javascript is cooler than the others...
         String buildCommand = "node " +  fileName;
 
+        op.setStarted();
         int exitCode = runProcessFor(op, buildCommand);
         if(exitCode == 0){
             op.setExecutablePath(fileName);
+        }else {
+            deleteFile(fileName);
         }
-
+        op.setCompleted();
         return exitCode;
     }
 }

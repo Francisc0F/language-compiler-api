@@ -70,7 +70,6 @@ class FieldMaskMapperTest {
         obj.getMetadata().setType("typeA");
         obj.getMetadata().setId("9876");
         obj.getMetadata().setStartTime(new Date());
-        obj.getMetadata().setProgress(50);
 
         // Specify the fields you want, including metadata properties
         String[] fieldMask = {"done", "metadata.type", "metadata.id", "metadata.startTime", "metadata.progress"};
@@ -84,7 +83,6 @@ class FieldMaskMapperTest {
         assertEquals("typeA", ((Map<String, Object>) resultMap.get("metadata")).get("type"));
         assertEquals("9876", ((Map<String, Object>) resultMap.get("metadata")).get("id"));
         assertTrue(((Map<String, Object>) resultMap.get("metadata")).containsKey("startTime"));
-        assertTrue(((Map<String, Object>) resultMap.get("metadata")).containsKey("progress"));
     }
 
 
@@ -117,21 +115,19 @@ class FieldMaskMapperTest {
         obj.getMetadata().setType("typeA");
         obj.getMetadata().setId("9876");
         obj.getMetadata().setStartTime(new Date());
-        obj.getMetadata().setProgress(50);
 
         // Specify all fields
         String[] fieldMask = {"*"};
 
         // Use the FieldMaskMapper to create a HashMap with all fields and their values
         Map<String, Object> resultMap = FieldMaskMapper.createHashMapWithFields(obj, fieldMask);
-
+        System.out.println(resultMap);
         // Assert the expected values
-        assertEquals(8, resultMap.size()); // Including base class fields
+        assertEquals(7, resultMap.size()); // Including base class fields
         assertEquals(true, resultMap.get("done"));
         assertEquals("typeA", ((Map<String, Object>) resultMap.get("metadata")).get("type"));
         assertEquals("9876", ((Map<String, Object>) resultMap.get("metadata")).get("id"));
         assertTrue(((Map<String, Object>) resultMap.get("metadata")).containsKey("startTime"));
-        assertTrue(((Map<String, Object>) resultMap.get("metadata")).containsKey("progress"));
     }
 
 }

@@ -6,9 +6,9 @@ import francisco.languagecompiler.resource.model.Operation;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OperationsService extends BaseService<Operation>{
+public class OperationsService extends BaseService<Operation> {
 
-    OperationsService(){
+    OperationsService() {
         this.items.add(new BuildOperation(new Build()));
     }
 }

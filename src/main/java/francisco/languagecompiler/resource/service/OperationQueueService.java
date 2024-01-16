@@ -19,7 +19,6 @@ public class OperationQueueService implements EventListener<Operation> {
     private final Queue<ExecutableOperation> operationsQueue = new LinkedList<>();
 
     OperationQueueService() {
-        System.out.println("OperationQueueService");
         notifier.subscribeOperationStarted(runner);
         notifier.subscribeOperationCompleted(this);
     }

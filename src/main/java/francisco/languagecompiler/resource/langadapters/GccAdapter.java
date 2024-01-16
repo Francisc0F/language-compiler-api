@@ -15,12 +15,9 @@ public class GccAdapter extends BaseCompilerAdapter  {
 
         String runableCProgram = fileName.replace(".c", "");
         String buildCommand = "gcc -o " + runableCProgram + " " + fileName;
-
-        int exitCode = runProcessFor(op, buildCommand);
-        if(exitCode == 0){
-            op.setExecutablePath(runableCProgram);
-        }
-
+        int exitCode = run(op, buildCommand, runableCProgram, fileName);
         return exitCode;
     }
+
+
 }

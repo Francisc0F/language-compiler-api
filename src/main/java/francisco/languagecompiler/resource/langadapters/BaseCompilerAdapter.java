@@ -61,6 +61,11 @@ public abstract  class BaseCompilerAdapter implements LangAdapter{
         return fileName;
     }
 
+    protected void deleteFile(String fileName) throws IOException {
+        Path filePath = Path.of(fileName);
+        Files.delete(filePath);
+    }
+
     @Override
     public void execute() {
 
@@ -80,5 +85,17 @@ public abstract  class BaseCompilerAdapter implements LangAdapter{
             this.operation.setStatus(BuildStatus.FAILURE);
             throw new RuntimeException(e);
         }
+    }
+
+    protected int run(BuildOperation op, String buildCommand, String runableCProgram, String fileName) throws IOException, InterruptedException {
+        op.setStarted();
+        int exitCode = runProcessFor(op, buildCommand);
+        if(exitCode == 0){
+            op.setExecutablePath(runableCProgram);
+        } else {
+            deleteFile(fileName);
+        }
+        op.setCompleted();
+        return exitCode;
     }
 }

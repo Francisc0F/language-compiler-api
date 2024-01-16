@@ -13,15 +13,11 @@ public class JavacAdapter extends BaseCompilerAdapter {
     @Override
     int langCompiler(BuildOperation op) throws InterruptedException, IOException {
         String fileName = createFile("java");
-        //todo: fix java files will always compile on error, they require Class name = file name
-        String buildCommand = "javac " +  fileName;
+        //todo: fix java files will always give error, they require Class name = file name
+        String buildCommand = "javac " + fileName;
         String runnableJava = fileName.replace(".java", "");
 
-        int exitCode = runProcessFor(op, buildCommand);
-        if(exitCode == 0){
-            op.setExecutablePath(runnableJava);
-        }
-
+        int exitCode = run(op, buildCommand, runnableJava, fileName);
         return exitCode;
     }
 }

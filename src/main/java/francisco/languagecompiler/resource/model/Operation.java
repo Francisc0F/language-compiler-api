@@ -41,10 +41,6 @@ public class Operation<resultExecutionT extends Execution> extends BaseResource 
         @Setter
         private Date endTime;
 
-        @Getter
-        @Setter
-        // progress in percentage
-        private int progress;
 
         Metadata(){
             super();

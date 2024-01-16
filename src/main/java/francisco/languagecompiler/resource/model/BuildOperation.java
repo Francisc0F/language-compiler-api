@@ -1,22 +1,17 @@
 package francisco.languagecompiler.resource.model;
 
 import com.google.protobuf.FieldMask;
-import francisco.languagecompiler.resource.langadapters.GccAdapter;
-import francisco.languagecompiler.resource.langadapters.JSAdapter;
-import francisco.languagecompiler.resource.langadapters.JavacAdapter;
-import francisco.languagecompiler.resource.langadapters.LangAdapter;
+import francisco.languagecompiler.resource.langadapters.*;
 import francisco.languagecompiler.resource.util.DateUtil;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 
 import static francisco.languagecompiler.resource.util.FieldMaskMapper.validateFieldMask;
 
 public class BuildOperation extends Operation<BuildResultExecution> {
 
     Build build;
-    String buildId;
 
     public String getOperationFileName() {
         return "Op_" + build.getName().replace(" ", "_");
@@ -30,14 +25,6 @@ public class BuildOperation extends Operation<BuildResultExecution> {
         metadata.setId(build.getId());
     }
 
-    public BuildOperation(String buildId) {
-        super();
-        this.buildId = buildId;
-        metadata = new Metadata();
-        metadata.setType("codecompile");
-        metadata.setId(this.buildId);
-    }
-
     @Override
     public void execute() {
         this.metadata.setStartTime(new Date());
@@ -46,9 +33,9 @@ public class BuildOperation extends Operation<BuildResultExecution> {
 
         LangAdapter adapter = createLanguageAdapter();
         if (adapter == null) {
-            //reason = "No adapter for " + this.language.getText();
             setStatus(BuildStatus.ABORTED);
         }
+
         assert adapter != null;
         adapter.execute();
 
@@ -60,15 +47,19 @@ public class BuildOperation extends Operation<BuildResultExecution> {
     private LangAdapter createLanguageAdapter() {
         LangAdapter adapter = null;
 
-        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.C) {
-            adapter = new GccAdapter(this);
-        }
-        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.Javascript) {
-            adapter = new JSAdapter(this);
-        }
-
-        if (Objects.requireNonNull(this.build.getLanguage()) == BuildLang.Java) {
-            adapter = new JavacAdapter(this);
+        switch (this.build.getLanguage()) {
+            case C: {
+                adapter = new GccAdapter(this);
+            }
+            case Java: {
+                adapter = new JavacAdapter(this);
+            }
+            case CPlusPlus: {
+                adapter = new GplusplusAdapter(this);
+            }
+            case Javascript: {
+                adapter = new JSAdapter(this);
+            }
         }
 
         return adapter;
@@ -92,6 +83,7 @@ public class BuildOperation extends Operation<BuildResultExecution> {
         buildResult();
         getResult().stdErrorLines.add(outputLine);
     }
+
     public void setExecutablePath(String runPath) {
         buildResult();
         getResult().setExecutablePath(runPath);
@@ -115,5 +107,15 @@ public class BuildOperation extends Operation<BuildResultExecution> {
     public void setExecutionStoppedReason(String message) {
         buildResult();
         getResult().errBuildReason = message;
+    }
+
+    public void setStarted() {
+        buildResult();
+        getResult().setStartedAt(new Date());
+    }
+
+    public void setCompleted() {
+        buildResult();
+        getResult().setCompletedAt(new Date());
     }
 }

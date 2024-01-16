@@ -184,27 +184,4 @@ public class BuildsController extends BaseController {
     public void deleteBuild(@PathVariable String id) {
         buildsService.removeById(id);
     }
-
-
-    @PostMapping("/{id}:trigger")
-    public ResponseEntity triggerBuild(@PathVariable String id) {
-        Build build = this.buildsService.get(id);
-
-        if (build == null) {
-            return ErrorResponse.builder()
-                    .addError("Not found build")
-                    .notFound();
-        }
-
-        //TODO: check existing operation in progress if not, create operation and run
-/*
-        if (build.getStatus().equals(BuildStatus.IN_PROGRESS)) {
-            return ErrorResponse.builder()
-                    .addError("Build is already in progress")
-                    .badRequest();
-        }*/
-
-        operationsQueueService.addToQueue(new BuildOperation(build));
-        return ResponseEntity.ok().build();
-    }
 }

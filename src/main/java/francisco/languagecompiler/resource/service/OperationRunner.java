@@ -2,7 +2,6 @@ package francisco.languagecompiler.resource.service;
 
 
 import francisco.languagecompiler.resource.model.BuildOperation;
-import francisco.languagecompiler.resource.model.BuildResultExecution;
 import francisco.languagecompiler.resource.model.ExecutableOperation;
 import francisco.languagecompiler.resource.model.Operation;
 import francisco.languagecompiler.resource.util.observer.EventListener;
@@ -39,9 +38,6 @@ public class OperationRunner implements EventListener<Operation> {
 
     /**
      * On operation start
-     *
-     * @param eventType
-     * @param obj
      */
     @Override
     public void handleEvent(String eventType, Operation obj) {

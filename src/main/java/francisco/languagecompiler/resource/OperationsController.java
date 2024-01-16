@@ -141,15 +141,11 @@ public class OperationsController extends BaseController {
                     .notFound();
         }
 
-       /*
-
-       validate is already in progress
-
        if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
             return ErrorResponse.builder()
-                    .addError("Build is already in progress")
+                    .addError("Operation is already in progress")
                     .badRequest();
-        }*/
+        }
 
         operationsQueueService.addToQueue(op);
         return ResponseEntity.ok().build();
@@ -188,74 +184,4 @@ public class OperationsController extends BaseController {
         assert op != null;
         return Response.createdResponse(op, fieldMask);
     }
-
-
-
-    /*    @PostMapping("/{id}:wait")
-    public ResponseEntity wait(@PathVariable String id) {
-        Operation op = this.operationsService.get(id);
-
-
-        if (op == null) {
-            return ErrorResponse.builder()
-                    .addError("Not found operation")
-                    .notFound();
-        }
-
-        */
-    /*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
-            return ErrorResponse.builder()
-                    .addError("Build is already in progress")
-                    .badRequest();
-        }*/
-    /*
-
-        operationsQueueService.addToQueue(op);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{id}:cancel")
-    public ResponseEntity cancel(@PathVariable String id) {
-        Operation op = this.operationsService.get(id);
-
-
-        if (op == null) {
-            return ErrorResponse.builder()
-                    .addError("Not found operation")
-                    .notFound();
-        }
-
-        */
-    /*if (op.getMetadata().equals(BuildStatus.IN_PROGRESS)) {
-            return ErrorResponse.builder()
-                    .addError("Build is already in progress")
-                    .badRequest();
-        }*/
-    /*
-
-        operationsQueueService.addToQueue(op);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{id}:batchrun")
-    public ResponseEntity batchRun(@RequestBody BatchOperationsRequest batchRequest) {
-
-        ArrayList<String> idsList = new ArrayList<>(Arrays.asList(batchRequest.getIds()));
-
-        if (idsList.isEmpty()) {
-            return ErrorResponse.builder()
-                    .addError("No ids especified")
-                    .badRequest();
-        }
-
-        ArrayList<String> setToRun = new ArrayList<>();
-        idsList.forEach(e -> {
-            Operation op = this.operationsService.get(e);
-            if (op != null) {
-                operationsQueueService.addToQueue(op);
-                setToRun.add(e);
-            }
-        });
-        return Response.createdResponse(setToRun);
-    }*/
 }

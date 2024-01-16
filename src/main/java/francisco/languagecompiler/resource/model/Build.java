@@ -106,6 +106,13 @@ public class Build extends BaseResource {
             this.name = helloWorld;
             return build();
         }
+
+        public Build CPP(String name, String code) {
+            this.code = code;
+            this.language = BuildLang.CPlusPlus;
+            this.name = name;
+            return build();
+        }
     }
 
 
